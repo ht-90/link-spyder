@@ -8,6 +8,7 @@ spyder.py
 import requests
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
+from webweb import Web
 
 
 class Spyder:
@@ -49,7 +50,7 @@ class Spyder:
             requests.get(self.url).content, "html.parser"
         )
 
-    def retrieve_all_links(self):
+    def retrieve_all_links(self, url):
         """Retrieve all href from a page"""
         for a_tag in self.soup.findAll("a"):
             href = a_tag.attrs.get("href")
@@ -57,7 +58,7 @@ class Spyder:
                 continue
             
             # join the URL if it's relative (not absolute link)
-            href = urljoin(self.url, href)
+            href = urljoin(url, href)
             # parse href
             parsed_href = urlparse(href)
             # remove URL GET parameters, URL fragments, etc.
@@ -130,3 +131,6 @@ class Spyder:
         # Concatenate all list of edges_list
         self.edges_list = sum(self.edges_list, [])
 
+    def create_web(self):
+        """Create a graph from a list of edges"""
+        return Web(self.edges_list).html
