@@ -8,6 +8,8 @@ spyder.py
 import requests
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
+
+
 class Spyder:
     """A web scraping object for a URL
 
@@ -24,10 +26,10 @@ class Spyder:
 
     """
 
-    url = None
-    domain_name = None
-    soup = None
+    url = str()
     max_crawl = 3
+    domain_name = str()
+    soup = str()
     internal_links = list()
     external_links = list()
     scraped_link = list()
