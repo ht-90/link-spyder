@@ -50,7 +50,7 @@ class Spyder:
             requests.get(self.url).content, "html.parser"
         )
 
-    def retrieve_all_links(self):
+    def retrieve_all_links(self, url):
         """Retrieve all href from a page"""
         for a_tag in self.soup.findAll("a"):
             href = a_tag.attrs.get("href")
@@ -58,7 +58,7 @@ class Spyder:
                 continue
             
             # join the URL if it's relative (not absolute link)
-            href = urljoin(self.url, href)
+            href = urljoin(url, href)
             # parse href
             parsed_href = urlparse(href)
             # remove URL GET parameters, URL fragments, etc.
