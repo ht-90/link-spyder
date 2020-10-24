@@ -12,8 +12,8 @@ class Spyder:
         url (str): a starting URL to parse content
         domain_name (str): a name of domain
         soup (bs4 object): html content
-        internal_links
-        external_links
+        internal_links (list): a list of internal link urls
+        external_links (list): a list of external link urls
 
     """
 
@@ -73,3 +73,28 @@ class Spyder:
         """Validate a page URL"""
         parsed = urlparse(url)
         return bool(parsed.netloc) and bool(parsed.scheme)
+
+    def initial_crawl(self):
+        """Crawl the starting URL page and extract href links
+
+        Examples:
+            >>> from linkspyder.spyder import Spyder
+            >>> spyder = Spyder(url="https://abcde.com/")
+            >>> spyder.initial_crawl()
+
+        """
+        # Retrieve domain of the URL
+        self.retrieve_domain()
+        # Scrape the URL
+        self.parse_page()
+        # Crawl the URL and scrape internal and external links
+        self.retrieve_all_links(url=self.url)
+        # Add URL to the completed URL list
+        self.scraped_link.append(self.url)
+        # Remove the URL from the target pages
+        self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
+        # Store scraped internal links with the page (edges)
+        edges = [[self.url, link] for link in self.internal_links]
+        # Add the URL to internal_link edges to result list
+        self.edges_list.append(edges)
+
