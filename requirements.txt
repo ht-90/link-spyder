@@ -1,0 +1,7 @@
+# Web scraping
+requests
+urllib
+beautifulsoup4
+
+# Web application
+flask
