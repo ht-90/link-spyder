@@ -5,23 +5,35 @@ spyder.py
 """
 
 
+import requests
+from urllib.parse import urlparse, urljoin
+from bs4 import BeautifulSoup
+
+
 class Spyder:
     """A web scraping object for a URL
 
     Attributes:
         url (str): a starting URL to parse content
+        max_crawl (int): a number of maximum depth of crawl for internal links
         domain_name (str): a name of domain
         soup (bs4 object): html content
-        internal_links
-        external_links
+        internal_links (list): a list of internal link urls
+        external_links (list): a list of external link urls
+        scraped_link (list): an array of link urls already scraped
+        edges_list (list): contains an array of an origin URL and a destinatio
+                           URL
 
     """
 
-    url = None
-    domain_name = None
-    soup = None
+    url = str()
+    max_crawl = 3
+    domain_name = str()
+    soup = str()
     internal_links = list()
     external_links = list()
+    scraped_link = list()
+    edges_list = list()
 
     def __init__(self, url):
         """Initialise a web scraper object"""
@@ -73,3 +85,48 @@ class Spyder:
         """Validate a page URL"""
         parsed = urlparse(url)
         return bool(parsed.netloc) and bool(parsed.scheme)
+
+    def initial_crawl(self):
+        """Crawl the starting URL page and extract href links
+
+        Examples:
+            >>> from linkspyder.spyder import Spyder
+            >>> spyder = Spyder(url="https://abcde.com/")
+            >>> spyder.initial_crawl()
+
+        """
+        # Retrieve domain of the URL
+        self.retrieve_domain()
+        # Scrape the URL
+        self.parse_page()
+        # Crawl the URL and scrape internal and external links
+        self.retrieve_all_links(url=self.url)
+        # Add URL to the completed URL list
+        self.scraped_link.append(self.url)
+        # Remove the URL from the target pages
+        self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
+        # Store scraped internal links with the page (edges)
+        edges = [[self.url, link] for link in self.internal_links]
+        # Add the URL to internal_link edges to result list
+        self.edges_list.append(edges)
+
+    def deep_crawl(self):
+        crawler = 1
+        for i_URL in self.internal_links:
+            if i_URL not in self.scraped_link:
+                self.retrieve_all_links(url=i_URL)
+                # Store scraped internal links with the page (edges) and add to result list
+                edges = [[i_URL, link] for link in self.internal_links]
+                self.edges_list.append(edges)
+                # Remove the crawled URL from the list of target pages
+                self.scraped_link.append(i_URL)
+                # if reached to max crawl, break
+                crawler += 1
+                if crawler > self.max_crawl:
+                    break
+                continue
+            continue
+
+        # Concatenate all list of edges_list
+        self.edges_list = sum(self.edges_list, [])
+
