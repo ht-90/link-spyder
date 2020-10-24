@@ -8,6 +8,7 @@ spyder.py
 import requests
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
+from webweb import Web
 
 
 class Spyder:
@@ -130,3 +131,6 @@ class Spyder:
         # Concatenate all list of edges_list
         self.edges_list = sum(self.edges_list, [])
 
+    def create_web(self):
+        """Create a graph from a list of edges"""
+        return Web(self.edges_list).html
