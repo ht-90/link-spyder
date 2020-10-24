@@ -6,13 +6,18 @@ crawl website and build link relationship viz
 
 * Windows
 
-    `>>> cd linkspyder`
-    `>>> SET FLASK_ENV=development` (to execute in development mode)
-    `>>> flask run`
+```shell
+>>> cd linkspyder
+>>> set FLASK_ENV=development
+>>> flask run
+```
+
+*FLASK_ENV=development to execute in development mode*
+
 
 # Dependecies
 
 * flask
 * urllib
 * beautifulsoup4
-* [webweb documentation](https://webwebpage.github.io/documentation/)
+* [webweb](https://webwebpage.github.io/documentation/)
