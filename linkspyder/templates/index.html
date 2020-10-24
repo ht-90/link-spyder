@@ -16,7 +16,7 @@
     <!-- URL Input Box -->
     <section class="section">
       <div class="block">
-        <form action="/data" method="post">
+        <form action="/" method="post">
           <div class="field has-addons">
             <div class="control">
               <input class="input" type="text" id="input-url" name="input-url" placeholder="Enter your website URL (i.e. https://google.com/)">
@@ -32,18 +32,16 @@
     </section>
     <!-- Web Viz & Stats -->
     <section class="section">
-      <div class="block">
-        <div class="tile is-ancestor">
-          <div class="tile is-parent">
-            <div id="web-viz" class="tile is-child notification is-light">
-              <p>WEB VIZ</p>
-              <iframe src={{ web_viz }}></iframe>
-            </div>
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <div class="tile is-child notification is-light">
+            <p class="sub-title is-size-4 has-text-centered">WEB VIZ</p>
+            {{ web_viz | safe }}
           </div>
-          <div class="tile is-parent">
-            <div id="web-stats" class="tile is-child notification is-light">
-              <p>LINK STATS</p>
-            </div>
+        </div>
+        <div class="tile is-parent">
+          <div class="tile is-child notification is-light">
+            <p class="sub-title is-size-4 has-text-centered">LINK STATS</p>
           </div>
         </div>
       </div>

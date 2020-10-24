@@ -9,7 +9,7 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/data", methods=["POST"])
+@app.route("/", methods=["POST"])
 def data():
     if request.method == "POST":
         # Receive user input URL
@@ -19,6 +19,7 @@ def data():
         spyder = Spyder(url=url)
         spyder.initial_crawl()
         spyder.deep_crawl()
+
         # Create web viz
         web_viz = spyder.create_web()
         
