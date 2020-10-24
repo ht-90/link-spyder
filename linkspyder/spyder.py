@@ -5,23 +5,33 @@ spyder.py
 """
 
 
+import requests
+from urllib.parse import urlparse, urljoin
+from bs4 import BeautifulSoup
 class Spyder:
     """A web scraping object for a URL
 
     Attributes:
         url (str): a starting URL to parse content
+        max_crawl (int): a number of maximum depth of crawl for internal links
         domain_name (str): a name of domain
         soup (bs4 object): html content
         internal_links (list): a list of internal link urls
         external_links (list): a list of external link urls
+        scraped_link (list): an array of link urls already scraped
+        edges_list (list): contains an array of an origin URL and a destinatio
+                           URL
 
     """
 
     url = None
     domain_name = None
     soup = None
+    max_crawl = 3
     internal_links = list()
     external_links = list()
+    scraped_link = list()
+    edges_list = list()
 
     def __init__(self, url):
         """Initialise a web scraper object"""
@@ -97,4 +107,24 @@ class Spyder:
         edges = [[self.url, link] for link in self.internal_links]
         # Add the URL to internal_link edges to result list
         self.edges_list.append(edges)
+
+    def deep_crawl(self):
+        crawler = 1
+        for i_URL in self.internal_links:
+            if i_URL not in self.scraped_link:
+                self.retrieve_all_links(url=i_URL)
+                # Store scraped internal links with the page (edges) and add to result list
+                edges = [[i_URL, link] for link in self.internal_links]
+                self.edges_list.append(edges)
+                # Remove the crawled URL from the list of target pages
+                self.scraped_link.append(i_URL)
+                # if reached to max crawl, break
+                crawler += 1
+                if crawler > self.max_crawl:
+                    break
+                continue
+            continue
+
+        # Concatenate all list of edges_list
+        self.edges_list = sum(self.edges_list, [])
 
