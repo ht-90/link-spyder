@@ -30,7 +30,7 @@ def data():
             return render_template("index.html", web_viz=web_viz), 200
         
         else:
-            error_msg = web_viz = f"""
+            error_msg = f"""
                 <div class="block" style="margin-top: 2.5rem;">
                   <p class="sub-title is-size-4 has-text-centered" style="font-style: italic;">
                     <span style="color: red;font-weight: 500">{url}</span> is not a valid URL...
