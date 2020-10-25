@@ -133,4 +133,25 @@ class Spyder:
 
     def create_web(self):
         """Create a graph from a list of edges"""
-        return Web(self.edges_list).html
+        return Web(
+            adjacency=self.edges_list,
+            title='Web-Viz | Link Spyder',
+            display={
+                # Node design
+                "sizeBy": "degree",
+                "radius": 10,
+                "colorBy": "degree",
+                "colorPalette": "Accent",
+                # Node control
+                "charge": 300,
+                "gravity": 0.005,
+                # Link design
+                "linkLength": 80,
+                "linkStrength": 0.2,
+                "scaleLinkWidth": True,
+                "scaleLinkOpacity": True,
+                # Layout
+                "hideMenu": True,
+                "showLegend": False
+            }
+        ).html
