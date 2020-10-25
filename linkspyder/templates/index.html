@@ -15,11 +15,11 @@
     </nav>
     <!-- URL Input Box -->
     <section class="section">
-      <div class="block">
+      <div class="columns is-centered">
         <form action="/" method="post">
           <div class="field has-addons">
             <div class="control">
-              <input class="input" type="text" id="input-url" name="input-url" placeholder="Enter your website URL (i.e. https://google.com/)">
+              <input class="input" type="text" id="input-url" name="input-url" placeholder="Enter URL">
             </div>
             <div class="control">
               <button class="button is-info">
@@ -29,6 +29,7 @@
           </div>
         </form>
       </div>
+      {{ error_msg | safe }}
     </section>
     <!-- Web Viz & Stats -->
     <section class="section">
