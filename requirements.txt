@@ -1,6 +1,6 @@
 # Web scraping
 requests
-urllib
+urllib3
 beautifulsoup4
 
 # Web application
