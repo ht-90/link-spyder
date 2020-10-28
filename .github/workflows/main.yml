@@ -25,4 +25,4 @@ jobs:
           APPDIR: "linkspyder"
         # Runs a set of commands using the runners shell
         run: |
-          git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/main:master
+          git push https://git.heroku.com/link-spyder.git origin/main:master
