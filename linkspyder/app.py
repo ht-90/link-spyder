@@ -39,3 +39,6 @@ def data():
                 """
 
             return render_template("index.html", error_msg=error_msg)
+
+if __name__ == '__main__':
+    app.run()
