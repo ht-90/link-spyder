@@ -5,6 +5,8 @@ name: Heroku-deploy
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 # CI/CD Jobs
 jobs:
@@ -12,6 +14,7 @@ jobs:
   build:
     # Build Runner
     runs-on: ubuntu-latest
+
     # Build Steps
     steps:
       - uses: actions/checkout@v2
@@ -24,5 +27,6 @@ jobs:
           HEROKU_EMAIL: "${{secrets.HEROKU_EMAIL}}"
           APPDIR: "linkspyder"
         # Runs a set of commands using the runners shell
+        if: github.ref == 'refs/heads/master' && job.status == 'success'
         run: |
-          git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/main:main
+          git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
