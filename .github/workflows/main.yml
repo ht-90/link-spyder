@@ -3,6 +3,9 @@ name: Heroku-deploy
 
 # Github Action triggers
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
