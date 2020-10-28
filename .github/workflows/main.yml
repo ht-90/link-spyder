@@ -4,9 +4,9 @@ name: Heroku-deploy
 # Github Action triggers
 on:
   push:
-    branches: [ main ]
+    branches: [ staging ]
   pull_request:
-    branches: [ main ]
+    branches: [ staging ]
 
 # CI/CD Jobs
 jobs:
