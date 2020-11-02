@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LINK SPYDER</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.js"></script>
   </head>
   <body>
     <!-- Navbar -->
@@ -42,5 +43,7 @@
         </div>
       </div>
     </section>
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/d3_hierarchical_edge_bundling.js') }}"></script>
   </body>
 </html>
