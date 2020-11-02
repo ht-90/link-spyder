@@ -6,7 +6,30 @@ d3_hierarchical_edge_bundling.js
 */
 
 data = [
-
+  {
+    "name": "domain.a",
+    "size": 3938,
+    "imports": [
+      "domain.b",
+      "domain.c"
+    ]
+  },
+  {
+    "name": "domain.b",
+    "size": 3812,
+    "imports": [
+      "domain.a",
+      "domain.c"
+    ]
+  },
+  {
+    "name": "domain.c",
+    "size": 6714,
+    "imports": [
+      "domain.a",
+      "domain.b"
+    ]
+  },
 ]
   
 
