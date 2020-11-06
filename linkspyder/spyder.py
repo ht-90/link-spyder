@@ -106,7 +106,7 @@ class Spyder:
         # Remove the URL from the target pages
         self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
         # Store scraped internal links with the page (edges)
-        edges = [[self.url, link] for link in self.internal_links]
+        edges = {"name": self.url, "size": 100, "imports": self.internal_links}
         # Add the URL to internal_link edges to result list
         self.edges_list.append(edges)
 
@@ -116,7 +116,7 @@ class Spyder:
             if i_URL not in self.scraped_link:
                 self.retrieve_all_links(url=i_URL)
                 # Store scraped internal links with the page (edges) and add to result list
-                edges = [[i_URL, link] for link in self.internal_links]
+                edges = {"name": i_URL, "size": 100, "imports": self.internal_links}
                 self.edges_list.append(edges)
                 # Remove the crawled URL from the list of target pages
                 self.scraped_link.append(i_URL)
