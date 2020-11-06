@@ -27,18 +27,17 @@ class Spyder:
 
     """
 
-    url = str()
-    max_crawl = 3
-    domain_name = str()
-    soup = str()
-    internal_links = list()
-    external_links = list()
-    scraped_link = list()
-    edges_list = list()
-
     def __init__(self, url):
         """Initialise a web scraper object"""
         self.url = url
+        self.max_crawl = 4
+        self.domain_name = str()
+        self.soup = str()
+        self.internal_links = list()
+        self.external_links = list()
+        self.scraped_link = list()
+        self.edges_list = list()
+        self.edges_list_clean = list()
 
     def retrieve_domain(self):
         """Retrieve a domain name from the URL"""
