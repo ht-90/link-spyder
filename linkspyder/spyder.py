@@ -24,6 +24,8 @@ class Spyder:
         scraped_link (list): an array of link urls already scraped
         edges_list (list): contains an array of an origin URL and a destinatio
                            URL
+        edges_list_clean (list): an array of dict containing normalised
+                                 scraping result data
 
     """
 
@@ -127,8 +129,35 @@ class Spyder:
                 continue
             continue
 
-        # Concatenate all list of edges_list
-        self.edges_list = sum(self.edges_list, [])
+    def clean_extracted_urls(self):
+        """Clean URL strings
+        """
+        for item in self.edges_list:
+            # Clean up scraped URL 
+            name_clean = item['name'].strip("https://").strip("http://").strip("www.").strip("/")
+            # Remove duplicated URLs in the internal_link array
+            imports_clean = [imp.strip("https://").strip("http://").strip("www.").strip("/") for imp in sorted(item['imports'])]
+            # imports_clean = [imp for imp in imports_clean if imp != name_clean]
+            # imports_clean = [imp for imp in imports_clean if "%" not in imp]
+            imports_clean = list(set(imports_clean))
+
+            # Update the data
+            self.edges_list_clean.append({
+                "name": name_clean,
+                "size": 100,
+                "imports": imports_clean
+            })
+
+    def extract_valid_destination_urls(self):
+        # Get a list of URLs scraped
+        nodes = [d['name'] for d in self.edges_list_clean]
+        # Only take destination URLs which are the scraped URL (to be updated)
+        valid_urls = [[url for url in d['imports'] if url in nodes] for d in self.edges_list_clean]
+        # Replace the destination URLs in the data with the filtered URLs
+        for d, v_url in zip(self.edges_list_clean, valid_urls):
+            d['imports'] = v_url
+
+        return True
 
     def create_web(self):
         """Create a graph from a list of edges"""

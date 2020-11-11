@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import json
 from linkspyder.spyder import Spyder
 from linkspyder.validators import URLValidator
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", viz_data=[{"": ""}])
 
 @app.route("/", methods=["POST"])
 def data():
@@ -23,11 +24,10 @@ def data():
             spyder = Spyder(url=url)
             spyder.initial_crawl()
             spyder.deep_crawl()
+            spyder.clean_extracted_urls()
+            spyder.extract_valid_destination_urls()
 
-            # Create web viz
-            web_viz = spyder.create_web()
-
-            return render_template("index.html", web_viz=web_viz), 200
+            return render_template("index.html", viz_data=spyder.edges_list_clean), 200
         
         else:
             error_msg = f"""
@@ -38,7 +38,7 @@ def data():
                 </div>
                 """
 
-            return render_template("index.html", error_msg=error_msg)
+            return render_template("index.html", viz_data=[{"": ""}], error_msg=error_msg)
 
 if __name__ == '__main__':
     app.run()
