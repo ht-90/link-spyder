@@ -10,11 +10,11 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/", methods=["POST"])
-def data():
+@app.route("/data", methods=["POST"])
+def crawl():
     if request.method == "POST":
         # Receive user input URL
-        url = request.form["input-url"]
+        url = request.get_data().decode('utf8')
         # Create a validator for a user input URL
         url_is_valid = URLValidator(url=url)
 
