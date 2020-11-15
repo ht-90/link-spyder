@@ -38,6 +38,8 @@ class Spyder:
         self.scraped_link = list()
         self.edges_list = list()
         self.edges_list_clean = list()
+        self.nodes = dict()
+        self.links = dict()
 
     def retrieve_domain(self):
         """Retrieve a domain name from the URL"""
@@ -106,7 +108,7 @@ class Spyder:
         # Remove the URL from the target pages
         self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
         # Store scraped internal links with the page (edges)
-        edges = {"name": self.url, "size": 100, "imports": self.internal_links}
+        edges = {"source": self.url, "value": 1, "source_category": 1, "target": self.internal_links}
         # Add the URL to internal_link edges to result list
         self.edges_list.append(edges)
 
@@ -116,7 +118,7 @@ class Spyder:
             if i_URL not in self.scraped_link:
                 self.retrieve_all_links(url=i_URL)
                 # Store scraped internal links with the page (edges) and add to result list
-                edges = {"name": i_URL, "size": 100, "imports": self.internal_links}
+                edges = {"source": i_URL, "value": 1, "source_category": 1, "target": self.internal_links}
                 self.edges_list.append(edges)
                 # Remove the crawled URL from the list of target pages
                 self.scraped_link.append(i_URL)
@@ -127,8 +129,66 @@ class Spyder:
                 continue
             continue
 
-        # Concatenate all list of edges_list
-        self.edges_list = sum(self.edges_list, [])
+        # # Concatenate all list of edges_list
+        # self.edges_list = sum(self.edges_list, [])
+
+    def clean_scraped_data(self):
+        self.edges_list_clean = []
+        for item in self.edges_list:
+            # Clean up scraped URL
+            source_clean = item['source'].replace("https://", "").replace("http://", "").replace("www.", "").replace(".html", "").strip("/")
+            # Remove duplicated URLs in the internal_link array
+            target_clean = [tgt.replace("https://", "").replace("http://", "").replace("www.", "").replace(".html", "").strip("/") for tgt in sorted(item['target'])]
+            target_clean = [tgt for tgt in target_clean if tgt != source_clean] # remove self-link
+            target_clean = list(set(target_clean)) # remove duplicated URLs
+            # Append cleaned data with temporary value and category
+            self.edges_list_clean.append({
+                "source": source_clean,
+                "value": 1,
+                "source_category": 1,
+                "target": target_clean
+            })
+
+    def generate_nodes_links(self):
+        links_array = []
+        nodes_array = []
+        nodes_reg = []
+        for t in self.edges_list_clean:
+            for tgt in t['target']:
+                link = {
+                    "source": t["source"],
+                    "target": tgt,
+                    "value": t['value'],
+                    "source_category": t['source_category']
+                }
+                node = {
+                    "id": tgt,
+                    "source_category": t['source_category']
+                }
+                # Register link
+                links_array.append(link)
+                # Register node (avoid duplicates)
+                if tgt not in nodes_reg:
+                    nodes_array.append(node)
+                nodes_reg.append(tgt)
+
+            self.links = {"links": links_array}
+
+            # Register nodes 
+            if t not in nodes_reg:
+                nodes_array.append({
+                    "id": t['source'],
+                    "source_category": t['source_category']
+                })
+        self.nodes = {"nodes": nodes_array}
+
+
+    def generate_graph_data(self):
+        graph_data = {}
+        graph_data.update(self.nodes)
+        graph_data.update(self.links)
+
+        return graph_data
 
     def create_web(self):
         """Create a graph from a list of edges"""
