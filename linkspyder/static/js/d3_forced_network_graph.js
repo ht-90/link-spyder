@@ -23,7 +23,7 @@ $("document").ready(function(){
         height = +svg.attr("height");
   
     // Set a color scheme
-    var color = d3.scaleOrdinal(d3.schemeCategory10);  
+    var color = d3.scaleOrdinal(d3.schemeAccent);  
 
     var url = document.getElementById("input-url").value;
     console.log("INPUT URL:", url);
@@ -67,7 +67,7 @@ $("document").ready(function(){
       // Add behaviour to nodes ???
       var circles = node.append("circle")
             .attr("r", 5)
-            .attr("fill", function(d) { return color(d.source_category); })
+            .attr("fill", function(d) { return color(d.category); })
           .call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
