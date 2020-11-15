@@ -15,9 +15,9 @@ crawl website and build link relationship viz
 *FLASK_ENV=development to execute in development mode*
 
 
-# Dependecies
+# Dependencies
 
 * flask
 * urllib
 * beautifulsoup4
-* [webweb](https://webwebpage.github.io/documentation/)
+* [d3-force](https://github.com/d3/d3-force)
