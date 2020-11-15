@@ -21,7 +21,6 @@ class URLValidator:
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
     def __init__(self, url, verify_exists=False):
-        super(URLValidator, self).__init__()
         self.url = url
         self.verify_exists = verify_exists
     
