@@ -36,7 +36,6 @@ class Spyder:
         self.external_links = list()
         self.scraped_link = list()
         self.edges_list = list()
-        self.edges_list_clean = list()
         self.nodes = dict()
         self.links = dict()
 
@@ -131,8 +130,10 @@ class Spyder:
         # # Concatenate all list of edges_list
         # self.edges_list = sum(self.edges_list, [])
 
-    def clean_scraped_data(self):
-        self.edges_list_clean = []
+    def generate_nodes_links(self):
+        links_array = []
+        nodes_array = []
+        nodes_reg = []
         for item in self.edges_list:
             # Clean up scraped URL
             source_clean = item['source'].replace("https://", "").replace("http://", "").replace("www.", "").replace(".html", "").strip("/")
@@ -140,47 +141,56 @@ class Spyder:
             target_clean = [tgt.replace("https://", "").replace("http://", "").replace("www.", "").replace(".html", "").strip("/") for tgt in sorted(item['target'])]
             target_clean = [tgt for tgt in target_clean if tgt != source_clean] # remove self-link
             target_clean = list(set(target_clean)) # remove duplicated URLs
-            # Append cleaned data with temporary value and category
-            self.edges_list_clean.append({
-                "source": source_clean,
-                "value": 1,
-                "source_category": 1,
-                "target": target_clean
-            })
-
-    def generate_nodes_links(self):
-        links_array = []
-        nodes_array = []
-        nodes_reg = []
-        for t in self.edges_list_clean:
-            for tgt in t['target']:
+            # Append link in a required format
+            for tgt in target_clean:
                 link = {
-                    "source": t["source"],
+                    "source": source_clean,
                     "target": tgt,
-                    "value": t['value'],
-                    "source_category": t['source_category']
+                    "value": 1,
+                    "category": 1
                 }
                 node = {
                     "id": tgt,
-                    "source_category": t['source_category']
+                    "category": 1
                 }
                 # Register link
                 links_array.append(link)
-                # Register node (avoid duplicates)
+                # Register target URL as node (avoid duplicates)
                 if tgt not in nodes_reg:
                     nodes_array.append(node)
                 nodes_reg.append(tgt)
 
+            # Add cleaned links data
             self.links = {"links": links_array}
-
-            # Register nodes 
-            if t not in nodes_reg:
+            # Register source URL as node
+            if source_clean not in nodes_reg:
                 nodes_array.append({
-                    "id": t['source'],
-                    "source_category": t['source_category']
+                    "id": source_clean,
+                    "category": 1
                 })
+
+        # Add cleaned nodes data
         self.nodes = {"nodes": nodes_array}
 
+    def categorise_nodes(self):
+        cat_urls = []
+        id_urls = {}
+        id_num = 0
+        for i_node, node in enumerate(self.nodes["nodes"]):
+            # Find the last index of "/" as URL category
+            i_last_slash = node['id'].rfind("/")
+            # Get category URL category URL of source and target URL of edge
+            if i_last_slash >= 0:
+                cat_url = node['id'][:i_last_slash]
+            else:
+                cat_url = node['id'][:]
+            # If URL already found, use relevant id number, otherwise assign new id number and update "category" value in the edge data
+            if cat_url not in id_urls.keys():
+                id_urls.update({cat_url: id_num})
+                self.nodes["nodes"][i_node]["category"] = id_num
+                id_num += 1
+            else:
+                self.nodes["nodes"][i_node]["category"] = id_urls[cat_url]
 
     def generate_graph_data(self):
         graph_data = {}
