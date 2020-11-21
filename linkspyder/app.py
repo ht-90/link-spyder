@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import json
 from linkspyder.spyder import Spyder
 from linkspyder.validators import URLValidator
 
@@ -10,11 +11,11 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/", methods=["POST"])
-def data():
+@app.route("/data", methods=["POST"])
+def crawl():
     if request.method == "POST":
         # Receive user input URL
-        url = request.form["input-url"]
+        url = request.get_data().decode('utf8')
         # Create a validator for a user input URL
         url_is_valid = URLValidator(url=url)
 
@@ -23,11 +24,12 @@ def data():
             spyder = Spyder(url=url)
             spyder.initial_crawl()
             spyder.deep_crawl()
+            spyder.generate_nodes_links()
+            spyder.categorise_nodes()
+            spyder.categorise_links()
+            viz_data = spyder.generate_graph_data()
 
-            # Create web viz
-            web_viz = spyder.create_web()
-
-            return render_template("index.html", web_viz=web_viz), 200
+            return json.dumps(viz_data)
         
         else:
             error_msg = f"""

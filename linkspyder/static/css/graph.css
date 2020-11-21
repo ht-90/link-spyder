@@ -1,0 +1,23 @@
+/*
+graph.css
+
+@author: ht-90
+*/
+
+/* ----- graph links ----- */
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+/* ----- graph nodes ----- */
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+/* ----- graph nodes texts ----- */
+text {
+  font-family: sans-serif;
+  font-size: 15px;
+}
