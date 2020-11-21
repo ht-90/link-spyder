@@ -5,3 +5,4 @@ services:
   # Project development container
   link-spyder:
     build: .
+    image: link-spyder:latest
