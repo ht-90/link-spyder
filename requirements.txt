@@ -6,6 +6,3 @@ beautifulsoup4
 # Web application
 flask
 gunicorn
-
-# Graph visualisation
-webweb
