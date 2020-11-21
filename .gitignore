@@ -1,6 +1,9 @@
 # IDE
 .vscode
 
+# docker
+.devcontainer
+
 # test directory
 _test
 

@@ -1,0 +1,7 @@
+# Docker-compose yml version
+version: '3'
+# Container information
+services:
+  # Project development container
+  link-spyder:
+    build: .
