@@ -26,6 +26,7 @@ def crawl():
             spyder.deep_crawl()
             spyder.generate_nodes_links()
             spyder.categorise_nodes()
+            spyder.categorise_links()
             viz_data = spyder.generate_graph_data()
 
             return json.dumps(viz_data)
