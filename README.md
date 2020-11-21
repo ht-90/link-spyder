@@ -21,3 +21,10 @@ crawl website and build link relationship viz
 * urllib
 * beautifulsoup4
 * [d3-force](https://github.com/d3/d3-force)
+
+# Docker container
+
+
+* Create and start a docker container: `$ docker-compose up -d --build`
+* Start bash: `$ docker-compose exec link-spyder bash`
+* Remove a container: `$ docker-compose down`
