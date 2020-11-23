@@ -7,5 +7,9 @@ beautifulsoup4
 flask
 gunicorn
 
-# Graph visualisation
-webweb
+# linter
+flake8
+pylint
+
+# formatter
+black

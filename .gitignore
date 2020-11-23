@@ -1,9 +1,17 @@
 # IDE
 .vscode
 
+# docker
+.devcontainer
+
 # test directory
 _test
 
 # pycache
 __pycache__
 
+# build/dist
+dist
+
+# log
+debug.log

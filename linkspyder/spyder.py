@@ -8,7 +8,6 @@ spyder.py
 import requests
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
-from webweb import Web
 
 
 class Spyder:
@@ -27,27 +26,29 @@ class Spyder:
 
     """
 
-    url = str()
-    max_crawl = 3
-    domain_name = str()
-    soup = str()
-    internal_links = list()
-    external_links = list()
-    scraped_link = list()
-    edges_list = list()
-
     def __init__(self, url):
         """Initialise a web scraper object"""
         self.url = url
+        self.max_crawl = 4
+        self.domain_name = str()
+        self.soup = str()
+        self.internal_links = list()
+        self.external_links = list()
+        self.scraped_link = list()
+        self.edges_list = list()
+        self.nodes = dict()
+        self.links = dict()
+        self.id_urls = dict()
 
     def retrieve_domain(self):
         """Retrieve a domain name from the URL"""
         self.domain_name = urlparse(self.url).netloc
-    
+
     def parse_page(self):
         """Parse the page content"""
         self.soup = BeautifulSoup(
-            requests.get(self.url).content, "html.parser"
+            requests.get(self.url).content,
+            "html.parser"
         )
 
     def retrieve_all_links(self, url):
@@ -56,13 +57,14 @@ class Spyder:
             href = a_tag.attrs.get("href")
             if self._href_exists(href=href):
                 continue
-            
+
             # join the URL if it's relative (not absolute link)
             href = urljoin(url, href)
             # parse href
             parsed_href = urlparse(href)
             # remove URL GET parameters, URL fragments, etc.
-            href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+            href = parsed_href.scheme + "://" + parsed_href.netloc\
+                + parsed_href.path
 
             if not self._page_is_valid(url=href):
                 # not a valid URL
@@ -105,9 +107,13 @@ class Spyder:
         # Add URL to the completed URL list
         self.scraped_link.append(self.url)
         # Remove the URL from the target pages
-        self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
+        self.internal_links = [
+            i_link
+            for i_link in self.internal_links
+            if i_link not in self.scraped_link
+        ]
         # Store scraped internal links with the page (edges)
-        edges = [[self.url, link] for link in self.internal_links]
+        edges = {"source": self.url, "value": 1, "target": self.internal_links}
         # Add the URL to internal_link edges to result list
         self.edges_list.append(edges)
 
@@ -116,8 +122,12 @@ class Spyder:
         for i_URL in self.internal_links:
             if i_URL not in self.scraped_link:
                 self.retrieve_all_links(url=i_URL)
-                # Store scraped internal links with the page (edges) and add to result list
-                edges = [[i_URL, link] for link in self.internal_links]
+                # Store scraped internal links with the page (edges)
+                edges = {
+                    "source": i_URL,
+                    "value": 1,
+                    "target": self.internal_links
+                }
                 self.edges_list.append(edges)
                 # Remove the crawled URL from the list of target pages
                 self.scraped_link.append(i_URL)
@@ -128,30 +138,113 @@ class Spyder:
                 continue
             continue
 
-        # Concatenate all list of edges_list
-        self.edges_list = sum(self.edges_list, [])
+        # # Concatenate all list of edges_list
+        # self.edges_list = sum(self.edges_list, [])
 
-    def create_web(self):
-        """Create a graph from a list of edges"""
-        return Web(
-            adjacency=self.edges_list,
-            title='Web-Viz | Link Spyder',
-            display={
-                # Node design
-                "sizeBy": "degree",
-                "radius": 10,
-                "colorBy": "degree",
-                "colorPalette": "Accent",
-                # Node control
-                "charge": 300,
-                "gravity": 0.005,
-                # Link design
-                "linkLength": 80,
-                "linkStrength": 0.2,
-                "scaleLinkWidth": True,
-                "scaleLinkOpacity": True,
-                # Layout
-                "hideMenu": True,
-                "showLegend": False
-            }
-        ).html
+    def generate_nodes_links(self):
+        links_array = []
+        nodes_array = []
+        nodes_reg = []
+        for item in self.edges_list:
+            # Clean up scraped URL
+            source_clean = (
+                item["source"]
+                .replace("https://", "")
+                .replace("http://", "")
+                .replace("www.", "")
+                .replace(".html", "")
+                .strip("/")
+            )
+            # Remove duplicated URLs in the internal_link array
+            target_clean = [
+                tgt.replace("https://", "")
+                .replace("http://", "")
+                .replace("www.", "")
+                .replace(".html", "")
+                .strip("/")
+                for tgt in sorted(item["target"])
+            ]
+            # remove self-link
+            target_clean = [tgt for tgt in target_clean if tgt != source_clean]
+            # remove duplicated URLs
+            target_clean = list(set(target_clean))
+            # Append link in a required format
+            for tgt in target_clean:
+                link = {
+                    "source": source_clean,
+                    "target": tgt,
+                    "value": 1,
+                }
+                node = {"id": tgt, "category": 1}
+                # Register link
+                links_array.append(link)
+                # Register target URL as node (avoid duplicates)
+                if tgt not in nodes_reg:
+                    nodes_array.append(node)
+                nodes_reg.append(tgt)
+
+            # Add cleaned links data
+            self.links = {"links": links_array}
+            # Register source URL as node
+            if source_clean not in nodes_reg:
+                nodes_array.append({"id": source_clean, "category": 1})
+
+        # Add cleaned nodes data
+        self.nodes = {"nodes": nodes_array}
+
+    def categorise_nodes(self):
+        """Update category value and strip parent URL of node"""
+        id_num = 0
+        for i_node, node in enumerate(self.nodes["nodes"]):
+            # Find the last index of "/" as URL category
+            i_last_slash = node["id"].rfind("/")
+            # Get category URL category URL of source and target URL of edge
+            if i_last_slash >= 0:
+                cat_url = node["id"][:i_last_slash]
+                page_name = node["id"][i_last_slash:]
+            else:
+                cat_url = page_name = node["id"]
+            # If URL already found, use relevant id number, otherwise assign
+            # new id number and update "category" value in the edge data
+            if cat_url not in self.id_urls.keys():
+                self.id_urls.update({cat_url: id_num})
+                self.nodes["nodes"][i_node]["category"] = id_num
+                self.nodes["nodes"][i_node]["parent"] = cat_url
+                self.nodes["nodes"][i_node]["page"] = page_name
+                id_num += 1
+            else:
+                self.nodes["nodes"][i_node]["category"] = self.id_urls[cat_url]
+                self.nodes["nodes"][i_node]["parent"] = cat_url
+                self.nodes["nodes"][i_node]["page"] = page_name
+
+    def categorise_links(self):
+        for i_link, link in enumerate(self.links["links"]):
+            i_src_last_slash = link["source"].rfind("/")
+            i_tgt_last_slash = link["target"].rfind("/")
+
+            if i_src_last_slash >= 0:
+                cat_src_url = link["source"][:i_src_last_slash]
+            else:
+                cat_src_url = link["source"]
+            if i_tgt_last_slash >= 0:
+                cat_tgt_url = link["target"][:i_tgt_last_slash]
+            else:
+                cat_tgt_url = link["target"]
+
+            self.links["links"][i_link]["source_category"] = (
+                self.id_urls[cat_src_url]
+            )
+            self.links["links"][i_link]["target_category"] = (
+                self.id_urls[cat_tgt_url]
+            )
+
+    def generate_graph_data(self):
+        graph_data = {}
+        graph_data.update(self.nodes)
+        graph_data.update(self.links)
+
+        category_data = []
+        for url, cat_val in self.id_urls.items():
+            category_data.append({"category_url": url, "category": cat_val})
+
+        return graph_data, category_data
