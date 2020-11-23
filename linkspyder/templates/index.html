@@ -4,16 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LINK SPYDER</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"/>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/graph.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/graph.css') }}"
+    />
   </head>
   <body>
     <!-- Navbar -->
     <nav class="navbar is-warning">
       <div class="navbar-brand">
-        <a class="navbar-item" href=""><span class="title is-size-4">LINK SPYDER</span></a>
+        <a class="navbar-item" href=""
+          ><span class="title is-size-4">LINK SPYDER</span></a
+        >
       </div>
     </nav>
     <!-- URL Input Box -->
@@ -22,11 +30,22 @@
         <form>
           <div class="field has-addons">
             <div class="control">
-              <input class="input" type="text" id="input-url" name="input-url" placeholder="Enter URL">
+              <input
+                class="input"
+                type="text"
+                id="input-url"
+                name="input-url"
+                placeholder="Enter URL"
+              />
             </div>
             <div class="control">
               <button class="button is-info">
-                <input class="button is-info" type="submit" id="execute-crawl" value="Create a Web Viz!">
+                <input
+                  class="button is-info"
+                  type="submit"
+                  id="execute-crawl"
+                  value="Create a Web Viz!"
+                />
               </button>
             </div>
           </div>
