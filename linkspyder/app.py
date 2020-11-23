@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request
-import json
+from flask import Flask, render_template, request, jsonify
 from linkspyder.spyder import Spyder
 from linkspyder.validators import URLValidator
 
@@ -11,11 +10,12 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
 @app.route("/data", methods=["POST"])
 def crawl():
     if request.method == "POST":
         # Receive user input URL
-        url = request.get_data().decode('utf8')
+        url = request.get_data().decode("utf8")
         # Create a validator for a user input URL
         url_is_valid = URLValidator(url=url)
 
@@ -27,10 +27,10 @@ def crawl():
             spyder.generate_nodes_links()
             spyder.categorise_nodes()
             spyder.categorise_links()
-            viz_data = spyder.generate_graph_data()
+            graph_data, category_data = spyder.generate_graph_data()
 
-            return json.dumps(viz_data)
-        
+            return jsonify(graph=graph_data, category=category_data)
+
         else:
             error_msg = f"""
                 <div class="block" style="margin-top: 2.5rem;">
@@ -42,5 +42,6 @@ def crawl():
 
             return render_template("index.html", error_msg=error_msg)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()
