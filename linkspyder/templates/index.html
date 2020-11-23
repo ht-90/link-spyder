@@ -40,12 +40,12 @@
         <div class="tile is-parent">
           <div class="tile is-child notification is-light">
             <p class="sub-title is-size-4 has-text-centered">WEB VIZ</p>
-            {{ web_viz | safe }}
+            <div id="container" class="svg-container"></div>
+            <div id="legend" class="legend-container"></div>
           </div>
         </div>
       </div>
     </section>
-    <svg width="960" height="600"></svg>
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/d3_forced_network_graph.js') }}"></script>
   </body>

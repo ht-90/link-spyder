@@ -17,11 +17,23 @@ $("document").ready(function(){
         .remove();
     }
 
-    // Create svg with width and height attributes
-    var svg = d3.select("svg"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
-  
+    // Create svg with width and height ratio
+    var svg = d3.select("div#container")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 960 600")
+        .classed("svg-content", true);
+
+    // Get container width and height values
+    var svgContainer = document.getElementById("container");
+    var width = svgContainer.clientWidth;
+    var height = svgContainer.clientHeight;
+
+    // Adjust the svg viewBox based on a container size
+    d3.select("svg")
+        .attr("width", width)
+        .attr("height", height * 0.8);
+
     // Set a color scheme
     var color = d3.scaleOrdinal(d3.schemeAccent);  
 
@@ -37,8 +49,11 @@ $("document").ready(function(){
       }
     }).then(function(data) {
 
-      console.log("data", data)
-
+      console.log("GRAPH DATA", data.graph);
+      console.log("GROUP DATA", data.category);
+	  
+      graph = data.graph;
+      group = data.category
 
       // Set force for a graph
       var simulation = d3.forceSimulation()
@@ -51,7 +66,7 @@ $("document").ready(function(){
       var link = svg.append("g")
             .attr("class", "links")
           .selectAll("line")
-          .data(data.links)
+          .data(graph.links)
           .enter()
           .append("line")
             .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
@@ -60,7 +75,7 @@ $("document").ready(function(){
       var node = svg.append("g")
             .attr("class", "nodes")
           .selectAll("g")
-          .data(data.nodes)
+          .data(graph.nodes)
           .enter()
           .append("g")
 
@@ -76,7 +91,7 @@ $("document").ready(function(){
       
       // Add node labels
       var labels = node.append("text")
-          .text(function(d) { return d.id; })
+          .text(function(d) { return d.page; })
             .attr("x", 6)
             .attr("y", 3);
       
@@ -86,12 +101,12 @@ $("document").ready(function(){
 
       // 
       simulation
-        .nodes(data.nodes)
+        .nodes(graph.nodes)
         .on("tick", ticked);
 
       // 
       simulation.force("link")
-        .links(data.links);
+        .links(graph.links);
 
       // 
       function ticked () {
