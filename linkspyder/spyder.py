@@ -203,11 +203,13 @@ class Spyder:
             if cat_url not in self.id_urls.keys():
                 self.id_urls.update({cat_url: id_num})
                 self.nodes["nodes"][i_node]["category"] = id_num
-                self.nodes["nodes"][i_node]["id"] = page_name
+                self.nodes["nodes"][i_node]["parent"] = cat_url
+                self.nodes["nodes"][i_node]["page"] = page_name
                 id_num += 1
             else:
                 self.nodes["nodes"][i_node]["category"] = self.id_urls[cat_url]
-                self.nodes["nodes"][i_node]["id"] = page_name
+                self.nodes["nodes"][i_node]["parent"] = cat_url
+                self.nodes["nodes"][i_node]["page"] = page_name
 
     def categorise_links(self):
         cat_urls = []
@@ -229,9 +231,7 @@ class Spyder:
                 cat_tgt_url = tgt_page_name = link['target']
             
             self.links["links"][i_link]["source_category"] = self.id_urls[cat_src_url]
-            self.links["links"][i_link]["source"] = src_page_name
             self.links["links"][i_link]["target_category"] = self.id_urls[cat_tgt_url]
-            self.links["links"][i_link]["target"] = tgt_page_name
 
     def generate_graph_data(self):
         graph_data = {}
