@@ -238,4 +238,8 @@ class Spyder:
         graph_data.update(self.nodes)
         graph_data.update(self.links)
 
-        return graph_data
+        category_data = []
+        for url, cat_val in self.id_urls.items():
+            category_data.append({"category_url": url, "category": cat_val})
+        
+        return graph_data, category_data

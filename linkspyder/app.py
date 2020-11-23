@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import json
 from linkspyder.spyder import Spyder
 from linkspyder.validators import URLValidator
@@ -27,9 +27,9 @@ def crawl():
             spyder.generate_nodes_links()
             spyder.categorise_nodes()
             spyder.categorise_links()
-            viz_data = spyder.generate_graph_data()
+            graph_data, category_data = spyder.generate_graph_data()
 
-            return json.dumps(viz_data)
+            return jsonify(graph=graph_data, category=category_data)
         
         else:
             error_msg = f"""
