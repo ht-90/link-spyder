@@ -43,11 +43,12 @@ class Spyder:
     def retrieve_domain(self):
         """Retrieve a domain name from the URL"""
         self.domain_name = urlparse(self.url).netloc
-    
+
     def parse_page(self):
         """Parse the page content"""
         self.soup = BeautifulSoup(
-            requests.get(self.url).content, "html.parser"
+            requests.get(self.url).content,
+            "html.parser"
         )
 
     def retrieve_all_links(self, url):
@@ -56,13 +57,14 @@ class Spyder:
             href = a_tag.attrs.get("href")
             if self._href_exists(href=href):
                 continue
-            
+
             # join the URL if it's relative (not absolute link)
             href = urljoin(url, href)
             # parse href
             parsed_href = urlparse(href)
             # remove URL GET parameters, URL fragments, etc.
-            href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+            href = parsed_href.scheme + "://" + parsed_href.netloc\
+                + parsed_href.path
 
             if not self._page_is_valid(url=href):
                 # not a valid URL
@@ -105,7 +107,11 @@ class Spyder:
         # Add URL to the completed URL list
         self.scraped_link.append(self.url)
         # Remove the URL from the target pages
-        self.internal_links = [i_link for i_link in self.internal_links if i_link not in self.scraped_link]
+        self.internal_links = [
+            i_link
+            for i_link in self.internal_links
+            if i_link not in self.scraped_link
+        ]
         # Store scraped internal links with the page (edges)
         edges = {"source": self.url, "value": 1, "target": self.internal_links}
         # Add the URL to internal_link edges to result list
@@ -116,8 +122,12 @@ class Spyder:
         for i_URL in self.internal_links:
             if i_URL not in self.scraped_link:
                 self.retrieve_all_links(url=i_URL)
-                # Store scraped internal links with the page (edges) and add to result list
-                edges = {"source": i_URL, "value": 1, "target": self.internal_links}
+                # Store scraped internal links with the page (edges)
+                edges = {
+                    "source": i_URL,
+                    "value": 1,
+                    "target": self.internal_links
+                }
                 self.edges_list.append(edges)
                 # Remove the crawled URL from the list of target pages
                 self.scraped_link.append(i_URL)
@@ -138,7 +148,7 @@ class Spyder:
         for item in self.edges_list:
             # Clean up scraped URL
             source_clean = (
-                item['source']
+                item["source"]
                 .replace("https://", "")
                 .replace("http://", "")
                 .replace("www.", "")
@@ -147,15 +157,17 @@ class Spyder:
             )
             # Remove duplicated URLs in the internal_link array
             target_clean = [
-                tgt
-                .replace("https://", "")
+                tgt.replace("https://", "")
                 .replace("http://", "")
                 .replace("www.", "")
                 .replace(".html", "")
-                .strip("/") for tgt in sorted(item['target'])
+                .strip("/")
+                for tgt in sorted(item["target"])
             ]
-            target_clean = [tgt for tgt in target_clean if tgt != source_clean] # remove self-link
-            target_clean = list(set(target_clean)) # remove duplicated URLs
+            # remove self-link
+            target_clean = [tgt for tgt in target_clean if tgt != source_clean]
+            # remove duplicated URLs
+            target_clean = list(set(target_clean))
             # Append link in a required format
             for tgt in target_clean:
                 link = {
@@ -163,10 +175,7 @@ class Spyder:
                     "target": tgt,
                     "value": 1,
                 }
-                node = {
-                    "id": tgt,
-                    "category": 1
-                }
+                node = {"id": tgt, "category": 1}
                 # Register link
                 links_array.append(link)
                 # Register target URL as node (avoid duplicates)
@@ -178,28 +187,25 @@ class Spyder:
             self.links = {"links": links_array}
             # Register source URL as node
             if source_clean not in nodes_reg:
-                nodes_array.append({
-                    "id": source_clean,
-                    "category": 1
-                })
+                nodes_array.append({"id": source_clean, "category": 1})
 
         # Add cleaned nodes data
         self.nodes = {"nodes": nodes_array}
 
     def categorise_nodes(self):
         """Update category value and strip parent URL of node"""
-        cat_urls = []
         id_num = 0
         for i_node, node in enumerate(self.nodes["nodes"]):
             # Find the last index of "/" as URL category
-            i_last_slash = node['id'].rfind("/")
+            i_last_slash = node["id"].rfind("/")
             # Get category URL category URL of source and target URL of edge
             if i_last_slash >= 0:
-                cat_url = node['id'][:i_last_slash]
-                page_name = node['id'][i_last_slash:]
+                cat_url = node["id"][:i_last_slash]
+                page_name = node["id"][i_last_slash:]
             else:
-                cat_url = page_name = node['id']
-            # If URL already found, use relevant id number, otherwise assign new id number and update "category" value in the edge data
+                cat_url = page_name = node["id"]
+            # If URL already found, use relevant id number, otherwise assign
+            # new id number and update "category" value in the edge data
             if cat_url not in self.id_urls.keys():
                 self.id_urls.update({cat_url: id_num})
                 self.nodes["nodes"][i_node]["category"] = id_num
@@ -212,26 +218,25 @@ class Spyder:
                 self.nodes["nodes"][i_node]["page"] = page_name
 
     def categorise_links(self):
-        cat_urls = []
-        id_num = 0
-
         for i_link, link in enumerate(self.links["links"]):
             i_src_last_slash = link["source"].rfind("/")
             i_tgt_last_slash = link["target"].rfind("/")
 
             if i_src_last_slash >= 0:
-                cat_src_url = link['source'][:i_src_last_slash]
-                src_page_name = link['source'][i_src_last_slash:]
+                cat_src_url = link["source"][:i_src_last_slash]
             else:
-                cat_src_url = src_page_name = link['source']
+                cat_src_url = link["source"]
             if i_tgt_last_slash >= 0:
-                cat_tgt_url = link['target'][:i_tgt_last_slash]
-                tgt_page_name = link['target'][i_tgt_last_slash:]
+                cat_tgt_url = link["target"][:i_tgt_last_slash]
             else:
-                cat_tgt_url = tgt_page_name = link['target']
-            
-            self.links["links"][i_link]["source_category"] = self.id_urls[cat_src_url]
-            self.links["links"][i_link]["target_category"] = self.id_urls[cat_tgt_url]
+                cat_tgt_url = link["target"]
+
+            self.links["links"][i_link]["source_category"] = (
+                self.id_urls[cat_src_url]
+            )
+            self.links["links"][i_link]["target_category"] = (
+                self.id_urls[cat_tgt_url]
+            )
 
     def generate_graph_data(self):
         graph_data = {}
@@ -241,5 +246,5 @@ class Spyder:
         category_data = []
         for url, cat_val in self.id_urls.items():
             category_data.append({"category_url": url, "category": cat_val})
-        
+
         return graph_data, category_data
