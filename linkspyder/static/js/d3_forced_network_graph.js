@@ -35,8 +35,9 @@ $("document").ready(function(){
         .attr("height", height * 0.8);
 
     // Set a color scheme
-    var color = d3.scaleOrdinal(d3.schemeAccent);  
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+    // Get input URL
     var url = document.getElementById("input-url").value;
     console.log("INPUT URL:", url);
 
@@ -81,7 +82,7 @@ $("document").ready(function(){
 
       // Add behaviour to nodes ???
       var circles = node.append("circle")
-            .attr("r", 5)
+            .attr("r", 10)
             .attr("fill", function(d) { return color(d.category); })
           .call(d3.drag()
             .on("start", dragstarted)
@@ -137,6 +138,7 @@ $("document").ready(function(){
           d.fx = null;
           d.fy = null;
         }
-      });
+
+    });
   });
 });
