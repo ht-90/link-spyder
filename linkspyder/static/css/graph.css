@@ -21,3 +21,9 @@ text {
   font-family: sans-serif;
   font-size: 15px;
 }
+
+/* ----- legend ----- */
+.legend-container {
+  max-height: 150px;
+  overflow-y: auto;
+}
