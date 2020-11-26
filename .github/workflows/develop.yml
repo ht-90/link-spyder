@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: docker
-        run |
+        run: |
           docker-compose up -d --build
           docker-compose exec link-spyder bash
       - name: lint
