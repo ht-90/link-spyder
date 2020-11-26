@@ -1,0 +1,27 @@
+# link-spyder CI/CD Pipeline
+name: Develop-branch
+
+# Github Action triggers
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+# CI Jobs
+jobs:
+  ci:
+    # Runner
+    runs-on: ubuntu-latest
+
+    # CI Steps
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: lint
+        run: |
+          pip install -r requirements.txt
+          cd link-spyder
+      - run: flake8 
+      - run: black .
