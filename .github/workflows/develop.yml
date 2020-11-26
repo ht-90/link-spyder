@@ -13,16 +13,18 @@ jobs:
   ci:
     # Runner
     runs-on: ubuntu-latest
-    container: python:3.7-slim
     
     # CI Steps
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: docker
+        run |
+          docker-compose up -d --build
+          docker-compose exec link-spyder bash
       - name: lint
         run: |
-          pip install -r requirements.txt
           cd link-spyder
       - run: flake8 
       - run: black .
