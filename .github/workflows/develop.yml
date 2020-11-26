@@ -25,6 +25,5 @@ jobs:
           docker-compose exec link-spyder bash
       - name: lint
         run: |
-          cd link-spyder
-      - run: flake8 
-      - run: black .
+          flake8
+          black .
