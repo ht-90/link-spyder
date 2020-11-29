@@ -173,6 +173,11 @@ $("document").ready(function () {
           return d;
         });
 
+      // Add zoom in/out
+      svg.call(d3.zoom().on("zoom", function (event, d) {
+        svg.attr("transform", event.transform)
+      }))
+
       //
       simulation.nodes(graph.nodes).on("tick", ticked);
 
