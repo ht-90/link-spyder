@@ -17,8 +17,8 @@ $("document").ready(function () {
     var svg = d3
       .select("div#container")
       .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", "0 0 960 600")
+      .attr("width", "100%")
+      .attr("height", "600")
       .classed("svg-content", true)
       .call(
         d3.zoom().on("zoom", function (event, d) {
@@ -30,11 +30,6 @@ $("document").ready(function () {
     var svgContainer = document.getElementById("container");
     var width = svgContainer.clientWidth;
     var height = svgContainer.clientHeight;
-
-    // Adjust the svg viewBox based on a container size
-    d3.select("svg")
-      .attr("width", width)
-      .attr("height", height * 0.8);
 
     // Set a color scheme
     var color = d3.scaleOrdinal(d3.schemeCategory10);
