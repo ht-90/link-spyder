@@ -17,19 +17,20 @@ $("document").ready(function () {
     var svg = d3
       .select("div#container")
       .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", "0 0 960 600")
-      .classed("svg-content", true);
+      .attr("width", "100%")
+      .attr("height", "600")
+      .classed("svg-content", true)
+      .call(
+        d3.zoom().on("zoom", function (event, d) {
+          svg.attr("transform", event.transform);
+        })
+      )
+      .append("g");
 
     // Get container width and height values
     var svgContainer = document.getElementById("container");
     var width = svgContainer.clientWidth;
     var height = svgContainer.clientHeight;
-
-    // Adjust the svg viewBox based on a container size
-    d3.select("svg")
-      .attr("width", width)
-      .attr("height", height * 0.8);
 
     // Set a color scheme
     var color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -38,24 +39,24 @@ $("document").ready(function () {
     var url = document.getElementById("input-url").value;
     console.log("INPUT URL:", url);
 
-      // Set force for a graph
-      var simulation = d3
-        .forceSimulation()
-        .force(
-          "link",
-          d3
-            .forceLink()
-            .id(function (d) {
-              return d.id;
-            })
-            .distance(100)
-        )
-        .force("charge", d3.forceManyBody().strength(-1000))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .force(
-          "collide",
-          d3.forceCollide().radius((d) => d.r * 10)
-        );
+    // Set force for a graph
+    var simulation = d3
+      .forceSimulation()
+      .force(
+        "link",
+        d3
+          .forceLink()
+          .id(function (d) {
+            return d.id;
+          })
+          .distance(100)
+      )
+      .force("charge", d3.forceManyBody().strength(-1000))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force(
+        "collide",
+        d3.forceCollide().radius((d) => d.r * 10)
+      );
 
     // Load data and create a graph
     d3.json("/data", {
@@ -98,13 +99,14 @@ $("document").ready(function () {
         .attr("r", 10)
         .attr("fill", function (d) {
           return color(d.category);
-        })
-      
+        });
+
       // Create a node drag behaviour
-      var dragHandler = d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended);
+      var dragHandler = d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
 
       dragHandler(node);
 
@@ -199,7 +201,7 @@ $("document").ready(function () {
         });
       }
     });
-  
+
     function dragstarted(event, d) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -216,6 +218,5 @@ $("document").ready(function () {
       d.fx = null;
       d.fy = null;
     }
-
   });
 });
