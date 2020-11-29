@@ -19,7 +19,12 @@ $("document").ready(function () {
       .append("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", "0 0 960 600")
-      .classed("svg-content", true);
+      .classed("svg-content", true)
+      .call(
+        d3.zoom().on("zoom", function (event, d) {
+          svg.attr("transform", event.transform)
+      }))
+      .append("g");
 
     // Get container width and height values
     var svgContainer = document.getElementById("container");
@@ -172,11 +177,6 @@ $("document").ready(function () {
         .text(function (d) {
           return d;
         });
-
-      // Add zoom in/out
-      svg.call(d3.zoom().on("zoom", function (event, d) {
-        svg.attr("transform", event.transform)
-      }))
 
       //
       simulation.nodes(graph.nodes).on("tick", ticked);
