@@ -38,20 +38,6 @@ $("document").ready(function () {
     var url = document.getElementById("input-url").value;
     console.log("INPUT URL:", url);
 
-    // Load data and create a graph
-    d3.json("/data", {
-      method: "POST",
-      body: url,
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    }).then(function (data) {
-      console.log("GRAPH DATA", data.graph);
-      console.log("GROUP DATA", data.category);
-
-      graph = data.graph;
-      group = data.category;
-
       // Set force for a graph
       var simulation = d3
         .forceSimulation()
@@ -70,6 +56,20 @@ $("document").ready(function () {
           "collide",
           d3.forceCollide().radius((d) => d.r * 10)
         );
+
+    // Load data and create a graph
+    d3.json("/data", {
+      method: "POST",
+      body: url,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }).then(function (data) {
+      console.log("GRAPH DATA", data.graph);
+      console.log("GROUP DATA", data.category);
+
+      graph = data.graph;
+      group = data.category;
 
       // Append links to svg
       var link = svg
@@ -99,13 +99,14 @@ $("document").ready(function () {
         .attr("fill", function (d) {
           return color(d.category);
         })
-        .call(
-          d3
-            .drag()
+      
+      // Create a node drag behaviour
+      var dragHandler = d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended)
-        );
+            .on("end", dragended);
+
+      dragHandler(node);
 
       // Add node labels
       var labels = node
@@ -197,23 +198,24 @@ $("document").ready(function () {
           return "translate(" + d.x + "," + d.y + ")";
         });
       }
-
-      function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-      }
-
-      function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-      }
     });
+  
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
   });
 });
