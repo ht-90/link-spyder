@@ -93,10 +93,22 @@ $("document").ready(function () {
         .enter()
         .append("g");
 
-      // Add behaviour to nodes ???
+      // Prepare node size ratio
+      var size_limit = 30;
+      var max_size = 0;
+      for (var i = 0; i < graph.nodes.length; ++i) {
+        if (max_size < graph.nodes[i].size) {
+          max_size = graph.nodes[i].size;
+        }
+      }
+      var size_ratio = size_limit / max_size;
+
+      // Add circles as nodes
       var circles = node
         .append("circle")
-        .attr("r", 10)
+        .attr("r", function (d) {
+          return d.size * size_ratio + 7;
+        })
         .attr("fill", function (d) {
           return color(d.category);
         });
