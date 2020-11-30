@@ -27,6 +27,7 @@ def crawl():
             spyder.generate_nodes_links()
             spyder.categorise_nodes()
             spyder.categorise_links()
+            spyder.size_nodes()
             graph_data, category_data = spyder.generate_graph_data()
 
             return jsonify(graph=graph_data, category=category_data)
