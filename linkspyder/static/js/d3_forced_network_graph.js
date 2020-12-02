@@ -152,11 +152,12 @@ $("document").ready(function () {
       function truncate(str, n) {
         if (str.length <= n) {
           return str;
+        } else {
+          return (
+            str.substr(0, 8) + "..." + str.substr(str.length - 7, str.length)
+          );
         }
-        else {
-          return str.substr(0, 8) + "..." + str.substr(str.length-7, str.length);
-        }
-      };
+      }
 
       // Add node labels
       var labels = node
