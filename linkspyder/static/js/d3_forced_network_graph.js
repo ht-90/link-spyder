@@ -13,6 +13,13 @@ $("document").ready(function () {
       d3.select("svg").selectAll("*").remove();
     }
 
+    // Prepare tooltip container
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
     // Create svg with width and height ratio
     var svg = d3
       .select("div#container")
@@ -111,6 +118,25 @@ $("document").ready(function () {
         })
         .attr("fill", function (d) {
           return color(d.category);
+        })
+        .on("mouseover", function (event, d) {
+          div.transition().duration(200);
+          div
+            .html(
+              "Page: " +
+                d.page +
+                "<br/>" +
+                "Category: " +
+                d.category +
+                "<br/>" +
+                "Full path: " +
+                d.id
+            )
+            .style("left", event.pageX + "px")
+            .style("top", event.pageY - 28 + "px");
+        })
+        .on("mouseout", function (d) {
+          div.transition().duration(500).style("opacity", 0);
         });
 
       // Create a node drag behaviour
@@ -140,11 +166,6 @@ $("document").ready(function () {
         })
         .attr("x", 6)
         .attr("y", 3);
-
-      // Add title tag and text to nodes
-      node.append("title").text(function (d) {
-        return d.id;
-      });
 
       // Graph legend
       var legend = d3
