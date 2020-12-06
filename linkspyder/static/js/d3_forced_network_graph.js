@@ -133,7 +133,8 @@ $("document").ready(function () {
                 d.id
             )
             .style("left", event.pageX + "px")
-            .style("top", event.pageY - 28 + "px");
+            .style("top", event.pageY - 28 + "px")
+            .style("opacity", 0.9);
         })
         .on("mouseout", function (d) {
           div.transition().duration(500).style("opacity", 0);
