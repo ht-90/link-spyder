@@ -13,6 +13,13 @@ $("document").ready(function () {
       d3.select("svg").selectAll("*").remove();
     }
 
+    // Prepare tooltip container
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
     // Create svg with width and height ratio
     var svg = d3
       .select("div#container")
@@ -93,12 +100,44 @@ $("document").ready(function () {
         .enter()
         .append("g");
 
-      // Add behaviour to nodes ???
+      // Prepare node size ratio
+      var size_limit = 30;
+      var max_size = 0;
+      for (var i = 0; i < graph.nodes.length; ++i) {
+        if (max_size < graph.nodes[i].size) {
+          max_size = graph.nodes[i].size;
+        }
+      }
+      var size_ratio = size_limit / max_size;
+
+      // Add circles as nodes
       var circles = node
         .append("circle")
-        .attr("r", 10)
+        .attr("r", function (d) {
+          return d.size * size_ratio + 7;
+        })
         .attr("fill", function (d) {
           return color(d.category);
+        })
+        .on("mouseover", function (event, d) {
+          div.transition().duration(200);
+          div
+            .html(
+              "Page: " +
+                d.page +
+                "<br/>" +
+                "Category: " +
+                d.category +
+                "<br/>" +
+                "Full path: " +
+                d.id
+            )
+            .style("left", event.pageX + "px")
+            .style("top", event.pageY - 28 + "px")
+            .style("opacity", 0.9);
+        })
+        .on("mouseout", function (d) {
+          div.transition().duration(500).style("opacity", 0);
         });
 
       // Create a node drag behaviour
@@ -110,19 +149,25 @@ $("document").ready(function () {
 
       dragHandler(node);
 
+      // Prepare short labels
+      function truncate(str, n) {
+        if (str.length <= n) {
+          return str;
+        } else {
+          return (
+            str.substr(0, 8) + "..." + str.substr(str.length - 7, str.length)
+          );
+        }
+      }
+
       // Add node labels
       var labels = node
         .append("text")
         .text(function (d) {
-          return d.page;
+          return truncate(d.page, 20);
         })
         .attr("x", 6)
         .attr("y", 3);
-
-      // Add title tag and text to nodes
-      node.append("title").text(function (d) {
-        return d.id;
-      });
 
       // Graph legend
       var legend = d3

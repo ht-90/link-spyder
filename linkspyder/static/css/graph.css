@@ -27,3 +27,20 @@ text {
   max-height: 150px;
   overflow-y: auto;
 }
+
+/* ----- tooltip ----- */
+div.tooltip {
+  position: absolute;
+  max-width: 300px;
+  height: auto;
+  overflow: auto;
+  padding: 8px;
+  text-align: left;
+  font: 15px sans-serif;
+  line-height: 24px;
+  color: rgba(240, 240, 240, 1.0);
+  background: rgba(20, 20, 20, 0.9);
+  border: 0px;
+  border-radius: 5px;
+  pointer-events: none;
+}

@@ -238,6 +238,13 @@ class Spyder:
                 self.id_urls[cat_tgt_url]
             )
 
+    def size_nodes(self):
+        """Add number of target links per node as size"""
+        link_src = [src["source"] for src in self.links["links"]]
+        for i_node, node in enumerate(self.nodes["nodes"]):
+            size = link_src.count(node["id"])
+            self.nodes["nodes"][i_node].update({"size": size})
+
     def generate_graph_data(self):
         graph_data = {}
         graph_data.update(self.nodes)
