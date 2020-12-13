@@ -65,6 +65,10 @@ $("document").ready(function () {
         d3.forceCollide().radius((d) => d.r * 10)
       );
 
+    // Web Statistics
+    var stats_container = d3
+      .select("#stats-container")
+
     // Load data and create a graph
     d3.json("/data", {
       method: "POST",
