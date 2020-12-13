@@ -14,6 +14,19 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/graph.css') }}"
     />
+    <!-- Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-70D1QK85YT"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-70D1QK85YT");
+    </script>
   </head>
   <body>
     <!-- Navbar -->
@@ -56,11 +69,16 @@
     <!-- Web Viz & Stats -->
     <section class="section">
       <div class="tile is-ancestor">
-        <div class="tile is-parent">
+        <!-- GRAPH -->
+        <div id="viz-container" class="tile is-parent is-vertical">
           <div class="tile is-child notification is-light">
             <p class="sub-title is-size-4 has-text-centered">WEB VIZ</p>
-            <div id="container" class="svg-container"></div>
-            <div id="legend" class="legend-container"></div>
+          </div>
+        </div>
+        <!-- STATS -->
+        <div id="stats-container" class="tile is-parent is-vertical">
+          <div class="tile is-child notification is-light">
+            <p class="sub-title is-size-4 has-text-centered">WEB STATS</p>
           </div>
         </div>
       </div>
