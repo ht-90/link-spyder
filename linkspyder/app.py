@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from linkspyder.spyder import Spyder
+from linkspyder.analyzer import Analyzer
 from linkspyder.validators import URLValidator
 
 
@@ -30,7 +31,19 @@ def crawl():
             spyder.size_nodes()
             graph_data, category_data = spyder.generate_graph_data()
 
-            return jsonify(graph=graph_data, category=category_data)
+            # Analyze crawled data
+            analyzer = Analyzer(
+                url=url,
+                graph=graph_data,
+                cat=category_data
+            )
+            stats = analyzer.generate_stats()
+
+            return jsonify(
+                graph=graph_data,
+                category=category_data,
+                stats=stats
+              )
 
         else:
             error_msg = f"""
