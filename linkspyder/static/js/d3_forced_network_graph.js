@@ -20,8 +20,7 @@ $("document").ready(function () {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    var viz_container = d3
-      .select("div#viz-container");
+    var viz_container = d3.select("div#viz-container");
 
     // Add containers for viz
     viz_container
@@ -85,8 +84,7 @@ $("document").ready(function () {
       );
 
     // Web Statistics
-    var stats_container = d3
-      .select("#stats-container")
+    var stats_container = d3.select("#stats-container");
 
     // Load data and create a graph
     d3.json("/data", {
@@ -251,21 +249,29 @@ $("document").ready(function () {
         .attr("id", "stats-kpi")
         .attr("class", "tile is-child notification is-light")
         .html(
-          '<nav class="level">'
-          + '<div class="level-item has-text-centered">'
-            + '<div>'
-              + '<p class="heading is-size-6">' + 'Pages Discovered' + '</p>'
-              + '<p class="title">' + stats.pages_found + '</p>'
-            + '</div>'
-          + '</div>'
-          + '<div class="level-item has-text-centered">'
-            + '<div>'
-              + '<p class="heading is-size-6">' + 'Internal Links Discovered' + '</p>'
-              + '<p class="title">' + stats.links_found + '</p>'
-            + '</div>'
-          + '</div>'
-          + '</nav>'
-        )
+          '<nav class="level">' +
+            '<div class="level-item has-text-centered">' +
+            "<div>" +
+            '<p class="heading is-size-6">' +
+            "Pages Discovered" +
+            "</p>" +
+            '<p class="title">' +
+            stats.pages_found +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            '<div class="level-item has-text-centered">' +
+            "<div>" +
+            '<p class="heading is-size-6">' +
+            "Internal Links Discovered" +
+            "</p>" +
+            '<p class="title">' +
+            stats.links_found +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            "</nav>"
+        );
 
       // Create a table for top outgoing pages
       var table = stats_container
@@ -278,9 +284,9 @@ $("document").ready(function () {
         .append("table")
         .attr("class", "table");
       createTable(
-        table=table,
-        headers=["Page", "No. of Outgoing Links"],
-        data=stats.top_outgoing_pages
+        (table = table),
+        (headers = ["Page", "No. of Outgoing Links"]),
+        (data = stats.top_outgoing_pages)
       );
       // Create a table for top incoming pages
       var table = stats_container
@@ -293,9 +299,9 @@ $("document").ready(function () {
         .append("table")
         .attr("class", "table");
       createTable(
-        table=table,
-        headers=["Page", "No. of Incoming Links"],
-        data=stats.top_incoming_pages
+        (table = table),
+        (headers = ["Page", "No. of Incoming Links"]),
+        (data = stats.top_incoming_pages)
       );
 
       //
@@ -350,21 +356,22 @@ $("document").ready(function () {
         .data(headers)
         .enter()
         .append("th")
-        .text(function(d) { return d; });
+        .text(function (d) {
+          return d;
+        });
 
       var tablebody = table.append("tbody");
-      rows = tablebody
-        .selectAll("tr")
-        .data(data)
-        .enter()
-        .append("tr");
+      rows = tablebody.selectAll("tr").data(data).enter().append("tr");
       cells = rows
         .selectAll("td")
-        .data(function (d) { return d; })
+        .data(function (d) {
+          return d;
+        })
         .enter()
         .append("td")
-        .text(function(d) { return d; });
-    };
-
+        .text(function (d) {
+          return d;
+        });
+    }
   });
 });

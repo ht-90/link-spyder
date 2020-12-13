@@ -9,7 +9,15 @@ import numpy as np
 
 
 class Analyzer:
-    """"""
+    """Analyze web crawl statistics
+
+    Attributes:
+        url (str): URL of a website
+        graph_data (dict): crawl data for graph visualisation
+        category_data (dict): crawl data for URL categories
+
+    """
+
     def __init__(self, url, graph, cat):
         self.url = url
         self.graph_data = graph
@@ -17,7 +25,10 @@ class Analyzer:
 
     def _top_pages(self):
         """Return top level page urls"""
-        return [cat for cat in self.category_data if "/" not in cat["category_url"]]
+        return [
+            cat for cat in self.category_data
+            if "/" not in cat["category_url"]
+        ]
 
     def _pages_found(self):
         """Number of pages identified"""
@@ -29,27 +40,47 @@ class Analyzer:
 
     def _crawled_pages(self):
         """Crawled pages"""
-        return np.unique([l["source"] for l in self.graph_data["links"]]).tolist()
+        return np.unique(
+            [link["source"] for link in self.graph_data["links"]]
+        ).tolist()
 
     def _target_pages(self):
         """Target pages"""
-        return np.unique([l["target"] for l in self.graph_data["links"]]).tolist()
+        return np.unique(
+            [link["target"] for link in self.graph_data["links"]]
+        ).tolist()
 
     def top_outgoing_pages(self, pages=5):
         """Top 5 pages with outgoing links"""
         top_outgoing = []
         for p in self._crawled_pages():
-            top_outgoing.append([p, len([l["source"] for l in self.graph_data["links"] if l["source"] == p])])
+            src_pages = [
+                link["source"] for link in self.graph_data["links"]
+                if link["source"] == p
+            ]
+            top_outgoing.append([p, len(src_pages)])
+        # Sort and extract result
         top_outgoing = np.array(top_outgoing)
-        return top_outgoing[np.argsort(top_outgoing[:, 1])][::-1][:pages].tolist()
+        sort_top_og = top_outgoing[np.argsort(top_outgoing[:, 1])]
+        filt_top_og = sort_top_og[::-1][:pages]
+
+        return filt_top_og.tolist()
 
     def top_incoming_pages(self):
         """Top 5 pages with incoming links"""
         top_incoming = []
         for p in self._target_pages():
-            top_incoming.append([p, len([l["target"] for l in self.graph_data["links"] if l["target"] == p])])
+            tgt_pages = [
+                link["target"] for link in self.graph_data["links"]
+                if link["target"] == p
+            ]
+            top_incoming.append([p, len(tgt_pages)])
+        # Sort and extract results
         top_incoming = np.array(top_incoming)
-        return top_incoming[np.argsort(top_incoming[:, 1])][::-1][:5].tolist()
+        sort_top_ic = top_incoming[np.argsort(top_incoming[:, 1])]
+        filt_top_ic = sort_top_ic[::-1][:5]
+
+        return filt_top_ic.tolist()
 
     def generate_stats(self):
         """Execute analyses and generate statistics"""
@@ -60,5 +91,5 @@ class Analyzer:
             "crawled_pages": self._crawled_pages(),
             "target_pages": self._target_pages(),
             "top_outgoing_pages": self.top_outgoing_pages(),
-            "top_incoming_pages": self.top_incoming_pages()
+            "top_incoming_pages": self.top_incoming_pages(),
         }
