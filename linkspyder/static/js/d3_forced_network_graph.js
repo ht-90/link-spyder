@@ -10,13 +10,20 @@ $("document").ready(function () {
 
     // Clear existing svg
     if (d3.select("svg")) {
-      d3.select("svg").selectAll("*").remove();
+      d3.select("#svg-container").remove();
+      d3.select("#tooltip").remove();
+      d3.select("#viz-div").remove();
+      d3.select("#stats-div").remove();
+      d3.select("#stats-kpi").remove();
+      d3.select("#stats-top-outgoing").remove();
+      d3.select("#stats-top-incoming").remove();
     }
 
     // Prepare tooltip container
     var div = d3
       .select("body")
       .append("div")
+      .attr("id", "tooltip")
       .attr("class", "tooltip")
       .style("opacity", 0);
 
@@ -25,6 +32,7 @@ $("document").ready(function () {
     // Add containers for viz
     viz_container
       .append("div")
+      .attr("id", "viz-div")
       .attr("class", "tile is-child notification is-light")
       .append("div")
       .attr("id", "container")
@@ -33,6 +41,7 @@ $("document").ready(function () {
     // Add containers for viz legend
     viz_container
       .append("div")
+      .attr("id", "stats-div")
       .attr("class", "tile is-child notification is-light")
       .append("div")
       .attr("id", "legend")
