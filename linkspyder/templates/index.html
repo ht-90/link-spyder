@@ -40,6 +40,7 @@
     <!-- URL Input Box -->
     <section class="section">
       <div class="columns is-centered">
+        <!-- LINK SPYDER -->
         <form>
           <div class="field has-addons">
             <div class="control">
@@ -57,6 +58,30 @@
                   class="button is-info"
                   type="submit"
                   id="execute-crawl"
+                  value="Create a Web Viz!"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+        <!-- SITEMAP SPYDER -->
+        <form>
+          <div class="field has-addons">
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                id="input-url-sitemap"
+                name="input-url-sitemap"
+                placeholder="Enter URL"
+              />
+            </div>
+            <div class="control">
+              <button class="button is-info">
+                <input
+                  class="button is-info"
+                  type="submit"
+                  id="execute-crawl-sitemap"
                   value="Create a Web Viz!"
                 />
               </button>
@@ -85,5 +110,6 @@
     </section>
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/d3_forced_network_graph.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/d3_forced_network_graph_sitemap.js') }}"></script>
   </body>
 </html>
