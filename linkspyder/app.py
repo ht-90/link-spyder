@@ -144,9 +144,10 @@ def crawl_sitemap():
               nodes=nodes_int, edges=edges_int
             )
 
-            print("LEN_NODES", len(graph_data["nodes"]))
-            print("LEN_LINKS", len(graph_data["links"])
-            print("LEN_CATEGORY", len(category_data))
+            print("DOMAIN:", domain_name)
+            print("LEN_NODES:", len(graph_data["nodes"]))
+            print("LEN_LINKS:", len(graph_data["links"]))
+            print("LEN_CATEGORY:", len(category_data))
 
             # Analyze crawled data
             analyzer = Analyzer(
