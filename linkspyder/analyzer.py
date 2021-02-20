@@ -6,6 +6,7 @@ analyzer.py
 
 
 import numpy as np
+from urllib.parse import urlparse
 
 
 class Analyzer:
@@ -29,6 +30,10 @@ class Analyzer:
             cat for cat in self.category_data
             if "/" not in cat["category_url"]
         ]
+
+    def _top_pages_sitemap(self):
+        """Return top level page urls"""
+        return urlparse(self.url).netloc
 
     def _pages_found(self):
         """Number of pages identified"""
@@ -86,6 +91,18 @@ class Analyzer:
         """Execute analyses and generate statistics"""
         return {
             "top_pages": self._top_pages(),
+            "pages_found": self._pages_found(),
+            "links_found": self._links_found(),
+            "crawled_pages": self._crawled_pages(),
+            "target_pages": self._target_pages(),
+            "top_outgoing_pages": self.top_outgoing_pages(),
+            "top_incoming_pages": self.top_incoming_pages(),
+        }
+
+    def generate_stats_sitemap(self):
+        """Execute analyses and generate statistics"""
+        return {
+            "top_pages": self._top_pages_sitemap(),
             "pages_found": self._pages_found(),
             "links_found": self._links_found(),
             "crawled_pages": self._crawled_pages(),
