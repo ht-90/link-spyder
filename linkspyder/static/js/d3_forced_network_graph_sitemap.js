@@ -5,25 +5,18 @@ d3_forced_network_graph.js
 */
 
 $("document").ready(function () {
-  $("#execute-crawl").click(function (e) {
+  $("#execute-crawl-sitemap").click(function (e) {
     e.preventDefault();
 
     // Clear existing svg
     if (d3.select("svg")) {
-      d3.select("#svg-container").remove();
-      d3.select("#tooltip").remove();
-      d3.select("#viz-div").remove();
-      d3.select("#stats-div").remove();
-      d3.select("#stats-kpi").remove();
-      d3.select("#stats-top-outgoing").remove();
-      d3.select("#stats-top-incoming").remove();
+      d3.select("svg").selectAll("*").remove();
     }
 
     // Prepare tooltip container
     var div = d3
       .select("body")
       .append("div")
-      .attr("id", "tooltip")
       .attr("class", "tooltip")
       .style("opacity", 0);
 
@@ -32,7 +25,6 @@ $("document").ready(function () {
     // Add containers for viz
     viz_container
       .append("div")
-      .attr("id", "viz-div")
       .attr("class", "tile is-child notification is-light")
       .append("div")
       .attr("id", "container")
@@ -41,7 +33,6 @@ $("document").ready(function () {
     // Add containers for viz legend
     viz_container
       .append("div")
-      .attr("id", "stats-div")
       .attr("class", "tile is-child notification is-light")
       .append("div")
       .attr("id", "legend")
@@ -70,7 +61,7 @@ $("document").ready(function () {
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     // Get input URL
-    var url = document.getElementById("input-url").value;
+    var url = document.getElementById("input-url-sitemap").value;
     console.log("INPUT URL:", url);
 
     // Set force for a graph
@@ -96,7 +87,7 @@ $("document").ready(function () {
     var stats_container = d3.select("#stats-container");
 
     // Load data and create a graph
-    d3.json("/data", {
+    d3.json("/sitemapper", {
       method: "POST",
       body: url,
       headers: {
