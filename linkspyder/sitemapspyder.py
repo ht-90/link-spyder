@@ -41,7 +41,9 @@ class SitemapSpyder:
     def parse_page_threading(self, urls):
         """
         Return:
-            Returns a list of lists containing parsed url and html pages in a list
+            Returns a list of lists containing parsed url and html pages in a
+            list
+
         Example:
             [
                 ["https://domain.com": "parsed html as str"],
@@ -62,7 +64,8 @@ class SitemapSpyder:
         return parsed_pages
 
     def extract_a_tags(self, soup):
-        # !!! UPDATE THIS TO EXTRACT FROM BLOG CONTENT AND OTHER - FOCUS ANALYSIS ON INTERNAL LINKS WITHIN CONTENT
+        # !!! UPDATE THIS TO EXTRACT FROM BLOG CONTENT AND OTHER
+        # FOCUS ANALYSIS ON INTERNAL LINKS WITHIN CONTENT
         a_tags = soup.findAll("a")
         return a_tags
 
@@ -90,7 +93,10 @@ class SitemapSpyder:
                 ],
             ]
         """
-        return [[page[0], self.extract_a_tags(soup=page[1])] for page in parsed_pages]
+        return [
+            [page[0], self.extract_a_tags(soup=page[1])]
+            for page in parsed_pages
+        ]
 
     # PARSE AND NORMALIZE href
     def convert_to_absolute_url(self, url, href):
@@ -132,22 +138,23 @@ class SitemapSpyder:
     # EXTRACT INTERNAL AND EXTERNAL LINKS (href)
     def extract_internal_links(self, hrefs, domain_name, url):
         return sorted(
-            list(
-                set([href for href in hrefs if (domain_name in href) and (href != url)])
-            )
+            list(set(
+                [
+                    href for href in hrefs
+                    if (domain_name in href) and (href != url)
+                ]
+            ))
         )
 
     def extract_external_links(self, hrefs, domain_name, url):
         return sorted(
-            list(
-                set(
-                    [
-                        href
-                        for href in hrefs
-                        if (domain_name not in href) and (href != url)
-                    ]
-                )
-            )
+            list(set(
+                [
+                    href
+                    for href in hrefs
+                    if (domain_name not in href) and (href != url)
+                ]
+            ))
         )
 
     def trim_url_scheme(self, url):
@@ -157,7 +164,9 @@ class SitemapSpyder:
     def create_node_categories(self, locs_url):
         cats = [loc.split("/")[1] for loc in locs_url if "/" in loc]
         cats = sorted(list(set(cats)))
-        cats = {cat: cat_num for cat, cat_num in zip(cats, range(0, len(cats)))}
+        cats = {
+            cat: cat_num for cat, cat_num in zip(cats, range(0, len(cats)))
+        }
         cats.update({"other": len(cats)})
         cats.update({"/": len(cats) + 1})
         return cats
@@ -195,8 +204,9 @@ class SitemapSpyder:
         edges_int = []
         nodes = [n["id"] for n in nodes]
 
-        for l in links:
-            src = urlparse(l["source"]).netloc + urlparse(l["source"]).path
+        for link in links:
+            src = urlparse(link["source"]).netloc\
+                + urlparse(link["source"]).path
             print(src)
             if "/" in src:
                 src_cat = categories[src.split("/")[1]]
@@ -204,7 +214,7 @@ class SitemapSpyder:
                 # Top page
                 src_cat = categories["/"]
 
-            for tgt in l["target"]:
+            for tgt in link["target"]:
                 tgt = urlparse(tgt).netloc + urlparse(tgt).path
                 # ignore if target url not in nodes (avoid error in d3)
                 if tgt in nodes:
@@ -213,8 +223,12 @@ class SitemapSpyder:
                     ):
                         # Category exists on sitemap
                         tgt_cat = categories[urlparse(tgt).path.split("/")[1]]
-                    elif ("/" in tgt) and (
-                        urlparse(tgt).path.split("/")[1] not in categories.keys()
+                    elif (
+                        ("/" in tgt) and
+                        (
+                            urlparse(tgt).path.split("/")[1]
+                            not in categories.keys()
+                        )
                     ):
                         # Not top page but category not on sitemap
                         tgt_cat = categories["other"]
@@ -228,7 +242,7 @@ class SitemapSpyder:
                             "source_category": src_cat,
                             "target": tgt,
                             "target_category": tgt_cat,
-                            "value": l["value"],
+                            "value": link["value"],
                         }
                     )
 
