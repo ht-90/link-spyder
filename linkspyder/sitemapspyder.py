@@ -5,19 +5,27 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class SitemapSpyder:
-    def __init__(self, url):
+    def __init__(self, url, max_crawl):
         self.url = url
-        self.max_crawl = 4
+        self.max_crawl = max_crawl
 
     # PARSE SITEMAP AND DOMAIN NAME
     def parse_sitemap(self, url):
-        # !!! MAKE IT WORK IF USER ENTER NON-TOP PAGE URL
-        sitemap = urljoin(url, "sitemap.xml")
-        xml_sitemap = requests.get(sitemap).text
-        soup = BeautifulSoup(xml_sitemap, features="lxml")
-        locs = soup.find_all("loc")
-        locs_url = sorted(list(set([loc.contents[0].strip("/") for loc in locs])))
-        return locs_url
+        if "sitemap.xml" in url:
+            xml_sitemap = requests.get(url).text
+            soup = BeautifulSoup(xml_sitemap, features="lxml")
+            if len(soup.find_all("loc")) > 0:
+                locs = soup.find_all("loc")
+                locs_url = sorted(list(set(
+                    [loc.contents[0].strip("/") for loc in locs]
+                )))
+                return locs_url
+            else:
+                print("No <loc> tag found in a sitemap!!!")
+                return False
+        else:
+            print("Error reading a sitemap URL!!!")
+            return False
 
     def retrieve_domain(self, url):
         """Retrieve a domain name from the URL"""
@@ -41,6 +49,7 @@ class SitemapSpyder:
                 ["https://domain.com/page2": "parsed html as str"],
             ]
         """
+        urls = urls[:self.max_crawl]
         MAX_THREADS = 30
         threads = min(MAX_THREADS, len(urls))
         parsed_pages = []

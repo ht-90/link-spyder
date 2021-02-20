@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-from urllib.parse import urlparse, urljoin
 from linkspyder.spyder import Spyder
 from linkspyder.sitemapspyder import SitemapSpyder
 from linkspyder.analyzer import Analyzer
@@ -7,6 +6,7 @@ from linkspyder.validators import URLValidator
 
 
 app = Flask(__name__)
+MAX_CRAWL = 5
 
 
 @app.route("/")
@@ -78,7 +78,7 @@ def crawl_sitemap():
         url_is_valid = URLValidator(url=url)
 
         if url_is_valid():
-            sms = SitemapSpyder(url=url)
+            sms = SitemapSpyder(url=url, max_crawl=MAX_CRAWL)
             # Get domain and sitemap of url
             domain_name = sms.retrieve_domain(url=url)
             locs_url = sms.parse_sitemap(url=url)
