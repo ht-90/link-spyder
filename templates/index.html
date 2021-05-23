@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block main %}
+<!-- URL Input Box -->
+<section class="section">
+  <div class="columns is-centered">
+    <!-- SITEMAP SPYDER -->
+    <form>
+      <p>Enter URL for sitemap.xml</p>
+      <br />
+      <div class="field has-addons">
+        <div class="control">
+          <input
+            class="input"
+            type="text"
+            id="input-url-sitemap"
+            name="input-url-sitemap"
+            placeholder="i.e. https://domain.com/sitemap.xml"
+          />
+        </div>
+        <div class="control">
+          <button class="button is-info">
+            <input
+              class="button is-info"
+              type="submit"
+              id="execute-crawl-sitemap"
+              value="Create a Web Viz!"
+            />
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  {{ error_msg | safe }}
+</section>
+<!-- Web Viz & Stats -->
+<section class="section">
+  <div class="tile is-ancestor">
+    <!-- GRAPH -->
+    <div id="viz-container" class="tile is-parent is-vertical">
+      <div class="tile is-child notification is-light">
+        <p class="sub-title is-size-4 has-text-centered">WEB VIZ</p>
+      </div>
+    </div>
+    <!-- STATS -->
+    <div id="stats-container" class="tile is-parent is-vertical">
+      <div class="tile is-child notification is-light">
+        <p class="sub-title is-size-4 has-text-centered">WEB STATS</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
