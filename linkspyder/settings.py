@@ -11,19 +11,33 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+# Load project environment
+try:
+    PROJECT_ENV = os.environ["PROJECT_ENV"]
+except:
+    raise KeyError(f"PROJECT_ENV is not set or invalid. See wallet/api/settings.py for a valid value.")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 
+# Load environment file
+dotenv_file = os.path.join(BASE_DIR, ".env", f"{PROJECT_ENV}")
+dotenv.load_dotenv(dotenv_file)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 
+# Set secret key and debug settings
+SECRET_KEY = os.environ.get("SECRET_KEY")
+DEBUG = int(os.environ.get("DEBUG", default=0))
+
+if DEBUG == 1:
+    DEBUG = True
+else:
+    DEBUG = False
+
 
 ALLOWED_HOSTS = []
 
