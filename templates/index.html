@@ -10,18 +10,8 @@
 <!-- Web Viz & Stats -->
 <section class="section">
   <div class="tile is-ancestor">
-    <!-- GRAPH -->
-    <div id="viz-container" class="tile is-parent is-vertical">
-      <div class="tile is-child notification is-light">
-        <p class="sub-title is-size-4 has-text-centered">WEB VIZ</p>
-      </div>
-    </div>
-    <!-- STATS -->
-    <div id="stats-container" class="tile is-parent is-vertical">
-      <div class="tile is-child notification is-light">
-        <p class="sub-title is-size-4 has-text-centered">WEB STATS</p>
-      </div>
-    </div>
+    {% include '_graph.html' %}
+    {% include '_stats.html' %}
   </div>
 </section>
 {% endblock %}
