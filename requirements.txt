@@ -6,6 +6,7 @@ lxml
 
 # Web application
 flask
+Django
 gunicorn
 
 # analysis
