@@ -1,10 +1,8 @@
 from django.views.generic import TemplateView
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import SitemapForm
-from .spyder import Spyder
 from .sitemapspyder import SitemapSpyder
 from .analyzer import Analyzer
 from .validators import SitemapURLValidator
@@ -116,7 +114,7 @@ def crawl_sitemap(request):
             )
 
         else:
-            error_msg = f"""
+            error_msg = """
                 <div class="block" style="margin-top: 2.5rem">
                   <p
                     class="sub-title is-size-4 has-text-centered"
