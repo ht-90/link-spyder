@@ -14,10 +14,12 @@ numpy
 
 # linter
 flake8
-pylint
 
 # formatter
 black
 
 # environment
 python-dotenv
+
+# ci/cd
+tox
