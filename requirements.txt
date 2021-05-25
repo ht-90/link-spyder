@@ -5,8 +5,8 @@ beautifulsoup4
 lxml
 
 # Web application
-flask
 Django
+whitenoise
 gunicorn
 
 # analysis

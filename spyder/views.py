@@ -1,83 +1,33 @@
-from flask import Flask, render_template, request, jsonify
-from linkspyder.spyder import Spyder
-from linkspyder.sitemapspyder import SitemapSpyder
-from linkspyder.analyzer import Analyzer
-from linkspyder.validators import URLValidator
+from django.views.generic import TemplateView
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
+from .forms import SitemapForm
+from .spyder import Spyder
+from .sitemapspyder import SitemapSpyder
+from .analyzer import Analyzer
+from .validators import SitemapURLValidator
+
+class Index(TemplateView):
+    template_name = "index.html"
 
 
-app = Flask(__name__)
-MAX_CRAWL = 5
+@csrf_exempt
+def crawl_sitemap(request):
 
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/data", methods=["POST"])
-def crawl():
     if request.method == "POST":
+
         # Receive user input URL
-        url = request.get_data().decode("utf8")
+        url = request.body.decode("utf8")
+
         # Create a validator for a user input URL
-        url_is_valid = URLValidator(url=url)
+        url_is_valid = SitemapURLValidator(address=url)
 
         if url_is_valid():
-            # Crawl the URL page
-            spyder = Spyder(url=url)
-            spyder.initial_crawl()
-            spyder.deep_crawl()
-            spyder.generate_nodes_links()
-            spyder.categorise_nodes()
-            spyder.categorise_links()
-            spyder.size_nodes()
-            graph_data, category_data = spyder.generate_graph_data()
 
-            # Analyze crawled data
-            analyzer = Analyzer(
-                url=url,
-                graph=graph_data,
-                cat=category_data
-            )
-            stats = analyzer.generate_stats()
+            MAX_CRAWL = 5
 
-            print("NODES", graph_data["nodes"][:3])
-            print("LINKS", graph_data["links"][:3])
-
-            return jsonify(
-                graph=graph_data,
-                category=category_data,
-                stats=stats
-              )
-
-        else:
-            error_msg = f"""
-                <div class="block" style="margin-top: 2.5rem">
-                  <p
-                    class="sub-title is-size-4 has-text-centered"
-                    style="font-style: italic"
-                  >
-                    <span
-                      style="color: red; font-weight: 500"
-                    >
-                    {url}
-                    </span> is not a valid URL...
-                  </p>
-                </div>
-                """
-
-            return render_template("index.html", error_msg=error_msg)
-
-
-@app.route("/sitemapper", methods=["POST"])
-def crawl_sitemap():
-    if request.method == "POST":
-        # Receive user input URL
-        url = request.get_data().decode("utf8")
-        # Create a validator for a user input URL
-        url_is_valid = URLValidator(url=url)
-
-        if url_is_valid():
             sms = SitemapSpyder(url=url, max_crawl=MAX_CRAWL)
             # Get domain and sitemap of url
             domain_name = sms.retrieve_domain(url=url)
@@ -157,11 +107,13 @@ def crawl_sitemap():
             )
             stats = analyzer.generate_stats_sitemap()
 
-            return jsonify(
-                graph=graph_data,
-                category=category_data,
-                stats=stats
-              )
+            return JsonResponse(
+                {
+                    "graph": graph_data,
+                    "category": category_data,
+                    "stats": stats,
+                }
+            )
 
         else:
             error_msg = f"""
@@ -170,17 +122,12 @@ def crawl_sitemap():
                     class="sub-title is-size-4 has-text-centered"
                     style="font-style: italic"
                   >
-                    <span
-                      style="color: red; font-weight: 500"
-                    >
-                    {url}
-                    </span> is not a valid URL...
+                    URL is not a valid URL...
                   </p>
                 </div>
                 """
 
-            return render_template("index.html", error_msg=error_msg)
+            return render(request, "_sitemap_form.html", {"error_msg": error_msg})
 
-
-if __name__ == "__main__":
-    app.run()
+    else:
+        return redirect("index")

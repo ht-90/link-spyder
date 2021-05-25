@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block main %}
+<!-- URL Input Box -->
+<section class="section">
+  <div class="columns is-centered">
+    {% include '_sitemap_form.html' %}
+  </div>
+  {{ error_msg | safe }}
+</section>
+<!-- Web Viz & Stats -->
+<section class="section">
+  <div class="tile is-ancestor">
+    {% include '_graph.html' %}
+    {% include '_stats.html' %}
+  </div>
+</section>
+{% endblock %}
