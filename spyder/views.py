@@ -7,7 +7,7 @@ from .forms import SitemapForm
 from .spyder import Spyder
 from .sitemapspyder import SitemapSpyder
 from .analyzer import Analyzer
-
+from .validators import SitemapURLValidator
 
 class Index(TemplateView):
     template_name = "index.html"
@@ -21,7 +21,10 @@ def crawl_sitemap(request):
         # Receive user input URL
         url = request.body.decode("utf8")
 
-        if url != "":
+        # Create a validator for a user input URL
+        url_is_valid = SitemapURLValidator(address=url)
+
+        if url_is_valid():
 
             MAX_CRAWL = 5
 
