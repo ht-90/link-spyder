@@ -7,7 +7,8 @@ from .sitemapspyder import SitemapSpyder
 from .analyzer import Analyzer
 from .validators import SitemapURLValidator
 
-class Index(TemplateView):
+
+class IndexView(TemplateView):
     template_name = "index.html"
 
 
