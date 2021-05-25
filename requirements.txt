@@ -12,6 +12,9 @@ gunicorn
 # analysis
 numpy
 
+# tests
+coverage
+
 # linter
 flake8
 
