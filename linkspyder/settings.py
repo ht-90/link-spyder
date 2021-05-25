@@ -15,8 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load project environment
 try:
     PROJECT_ENV = os.environ["PROJECT_ENV"]
-except:
-    raise KeyError(f"PROJECT_ENV is not set or invalid. See wallet/api/settings.py for a valid value.")
+except KeyError as e:
+    print(e, "PROJECT_ENV is not set or invalid. See wallet/api/settings.py for a valid value.")
 
 # Load environment file
 dotenv_file = os.path.join(BASE_DIR, ".env", f"{PROJECT_ENV}")
