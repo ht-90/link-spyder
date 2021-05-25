@@ -15,8 +15,7 @@ class SitemapURLValidator:
         r"localhost|"  # localhost...
         r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # ...or ip
         r"(?::\d+)?"  # optional port
-        r"(?:/?|[/?]\S+)$"
-        r"\bsitemap.xml\b",
+        r"(?:/?|[/?]\S+)$",
         re.IGNORECASE,
     )
 
