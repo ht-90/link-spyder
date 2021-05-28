@@ -103,45 +103,15 @@ $("document").ready(function () {
         .enter()
         .append("g");
 
-      // Prepare node size ratio
-      var size_limit = 30;
-      var max_size = 0;
-      for (var i = 0; i < graph.nodes.length; ++i) {
-        if (max_size < graph.nodes[i].size) {
-          max_size = graph.nodes[i].size;
-        }
-      }
-      var size_ratio = size_limit / max_size;
+      addLabel(node);
 
       // Add circles as nodes
-      var circles = node
-        .append("circle")
-        .attr("r", function (d) {
-          return d.size * size_ratio + 7;
-        })
-        .attr("fill", function (d) {
-          return color(d.category);
-        })
-        .on("mouseover", function (event, d) {
-          div.transition().duration(200);
-          div
-            .html(
-              "Page: " +
-                d.page +
-                "<br/>" +
-                "Category: " +
-                d.category +
-                "<br/>" +
-                "Full path: " +
-                d.id
-            )
-            .style("left", event.pageX + "px")
-            .style("top", event.pageY - 28 + "px")
-            .style("opacity", 0.9);
-        })
-        .on("mouseout", function (d) {
-          div.transition().duration(500).style("opacity", 0);
-        });
+      var circles = node.append("circle");
+      sizeNode(circles, graph.nodes);
+      colorNode(circles, color);
+
+      // Add tooltip to circles
+      addTooltip(circles, tooltip);
 
       // Create a node drag behaviour
       var dragHandler = d3
@@ -152,25 +122,6 @@ $("document").ready(function () {
 
       dragHandler(node);
 
-      // Prepare short labels
-      function truncate(str, n) {
-        if (str.length <= n) {
-          return str;
-        } else {
-          return (
-            str.substr(0, 8) + "..." + str.substr(str.length - 7, str.length)
-          );
-        }
-      }
-
-      // Add node labels
-      var labels = node
-        .append("text")
-        .text(function (d) {
-          return truncate(d.page, 20);
-        })
-        .attr("x", 6)
-        .attr("y", 3);
 
       // Graph legend
       var legend = d3
