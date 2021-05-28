@@ -132,34 +132,19 @@ $("document").ready(function () {
       addStatsContainer(stats_container, stats);
 
       // Create a table for top outgoing pages
-      var table = stats_container
-        .append("div")
-        .attr("id", "stats-top-outgoing")
-        .attr("class", "tile is-child notification is-light")
-        .append("p")
-        .attr("class", "heading is-size-6 has-text-centered")
-        .text("Top Outgoing Pages")
-        .append("table")
-        .attr("class", "table");
-      createTable(
-        (table = table),
-        (headers = ["Page", "No. of Outgoing Links"]),
-        (data = stats.top_outgoing_pages)
+      createTopFiveTable(
+        stats_container,
+        "stats-top-outgoing",
+        "Top Outgoing Pages",
+        ["Page", "No. of Outgoing Links"],
+        stats.top_outgoing_pages,
       );
-      // Create a table for top incoming pages
-      var table = stats_container
-        .append("div")
-        .attr("id", "stats-top-incoming")
-        .attr("class", "tile is-child notification is-light")
-        .append("p")
-        .attr("class", "heading is-size-6 has-text-centered")
-        .text("Top Incoming Pages")
-        .append("table")
-        .attr("class", "table");
-      createTable(
-        (table = table),
-        (headers = ["Page", "No. of Incoming Links"]),
-        (data = stats.top_incoming_pages)
+      createTopFiveTable(
+        stats_container,
+        "stats-top-incoming",
+        "Top Incoming Pages",
+        ["Page", "No. of Incoming Links"],
+        stats.top_incoming_pages,
       );
 
       //
@@ -204,32 +189,6 @@ $("document").ready(function () {
       if (!event.active) simulation.alphaTarget(0);
       d.fx = null;
       d.fy = null;
-    }
-
-    // Create a table
-    function createTable(table, headers, data) {
-      var header = table.append("thead").append("tr");
-      header
-        .selectAll("th")
-        .data(headers)
-        .enter()
-        .append("th")
-        .text(function (d) {
-          return d;
-        });
-
-      var tablebody = table.append("tbody");
-      rows = tablebody.selectAll("tr").data(data).enter().append("tr");
-      cells = rows
-        .selectAll("td")
-        .data(function (d) {
-          return d;
-        })
-        .enter()
-        .append("td")
-        .text(function (d) {
-          return d;
-        });
     }
   });
 });
