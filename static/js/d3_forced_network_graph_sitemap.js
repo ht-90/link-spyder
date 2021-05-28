@@ -14,23 +14,9 @@ $("document").ready(function () {
     // Prepare tooltip container
     var tooltip = createTooltip(0);
 
-    var viz_container = d3.select("div#viz-container");
-
-    // Add containers for viz
-    viz_container
-      .append("div")
-      .attr("class", "tile is-child notification is-light")
-      .append("div")
-      .attr("id", "container")
-      .attr("class", "svg-container");
-
-    // Add containers for viz legend
-    viz_container
-      .append("div")
-      .attr("class", "tile is-child notification is-light")
-      .append("div")
-      .attr("id", "legend")
-      .attr("class", "legend-container");
+    // Create containers
+    createGraphContainer("div#viz-container");
+    createLegendContainer("div#viz-container");
 
     // Create svg with width and height ratio
     var svg = d3
