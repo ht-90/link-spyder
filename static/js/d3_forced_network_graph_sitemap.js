@@ -45,23 +45,7 @@ $("document").ready(function () {
     console.log("INPUT URL:", url);
 
     // Set force for a graph
-    var simulation = d3
-      .forceSimulation()
-      .force(
-        "link",
-        d3
-          .forceLink()
-          .id(function (d) {
-            return d.id;
-          })
-          .distance(100)
-      )
-      .force("charge", d3.forceManyBody().strength(-1000))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force(
-        "collide",
-        d3.forceCollide().radius((d) => d.r * 10)
-      );
+    var simulation = simulateGraph(width, height, 100, -1000, 10);
 
     // Web Statistics
     var stats_container = d3.select("#stats-container");
@@ -147,31 +131,10 @@ $("document").ready(function () {
         stats.top_incoming_pages,
       );
 
-      //
-      simulation.nodes(graph.nodes).on("tick", ticked);
+      // Update graph by user interaction
+      rerunNodeSimulation(simulation, node, graph.nodes, link);
+      rerunLinkSimulation(simulation, graph.links);
 
-      //
-      simulation.force("link").links(graph.links);
-
-      //
-      function ticked() {
-        link
-          .attr("x1", function (d) {
-            return d.source.x;
-          })
-          .attr("y1", function (d) {
-            return d.source.y;
-          })
-          .attr("x2", function (d) {
-            return d.target.x;
-          })
-          .attr("y2", function (d) {
-            return d.target.y;
-          });
-        node.attr("transform", function (d) {
-          return "translate(" + d.x + "," + d.y + ")";
-        });
-      }
     });
 
     function dragstarted(event, d) {
