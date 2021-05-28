@@ -12,11 +12,7 @@ $("document").ready(function () {
     clearGraph("svg");
 
     // Prepare tooltip container
-    var div = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+    var tooltip = createTooltip(0);
 
     var viz_container = d3.select("div#viz-container");
 
