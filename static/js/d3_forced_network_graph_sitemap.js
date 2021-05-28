@@ -9,9 +9,7 @@ $("document").ready(function () {
     e.preventDefault();
 
     // Clear existing svg
-    if (d3.select("svg")) {
-      d3.select("svg").selectAll("*").remove();
-    }
+    clearGraph("svg");
 
     // Prepare tooltip container
     var div = d3
