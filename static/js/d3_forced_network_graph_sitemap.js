@@ -98,14 +98,7 @@ $("document").ready(function () {
       addTooltip(circles, tooltip);
 
       // Create a node drag behaviour
-      var dragHandler = d3
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended);
-
-      dragHandler(node);
-
+      createDragHandler(node, simulation);
 
       // Graph legend
       var legend = createLegend(width, group);
@@ -136,22 +129,5 @@ $("document").ready(function () {
       rerunLinkSimulation(simulation, graph.links);
 
     });
-
-    function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-
-    function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
   });
 });
