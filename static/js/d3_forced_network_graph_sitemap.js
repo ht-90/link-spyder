@@ -129,34 +129,7 @@ $("document").ready(function () {
       addLegendText(legend, width, group, color);
 
       // Add Web Statistics
-      stats_container
-        .append("div")
-        .attr("id", "stats-kpi")
-        .attr("class", "tile is-child notification is-light")
-        .html(
-          '<nav class="level">' +
-            '<div class="level-item has-text-centered">' +
-            "<div>" +
-            '<p class="heading is-size-6">' +
-            "Pages Discovered" +
-            "</p>" +
-            '<p class="title">' +
-            stats.pages_found +
-            "</p>" +
-            "</div>" +
-            "</div>" +
-            '<div class="level-item has-text-centered">' +
-            "<div>" +
-            '<p class="heading is-size-6">' +
-            "Internal Links Discovered" +
-            "</p>" +
-            '<p class="title">' +
-            stats.links_found +
-            "</p>" +
-            "</div>" +
-            "</div>" +
-            "</nav>"
-        );
+      addStatsContainer(stats_container, stats);
 
       // Create a table for top outgoing pages
       var table = stats_container
