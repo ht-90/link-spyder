@@ -30,7 +30,8 @@ def crawl_sitemap(request):
             sms = SitemapSpyder(url=url, max_crawl=MAX_CRAWL)
             # Get domain and sitemap of url
             domain_name = sms.retrieve_domain()
-            locs_url = sms.parse_sitemap(url=url)
+            sitemap_xml = sms.parse_sitemap_xml()
+            locs_url = sms.parse_sitemap(sitemap=sitemap_xml)
             # Parse urls in sitemap
             parsed_pages = sms.parse_page_threading(urls=locs_url)
             # Retrieve a tags from each page

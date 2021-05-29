@@ -14,28 +14,27 @@ class SitemapSpyder:
         domain_name = urlparse(self.url).netloc
         return domain_name
 
-    # PARSE SITEMAP AND DOMAIN NAME
-    def parse_sitemap(self, url):
-        if "sitemap.xml" in url:
-            xml_sitemap = requests.get(url).text
-            soup = BeautifulSoup(xml_sitemap, features="lxml")
-            if len(soup.find_all("loc")) > 0:
-                locs = soup.find_all("loc")
-                locs_url = sorted(list(set(
-                    [loc.contents[0].strip("/") for loc in locs]
-                )))
-                return locs_url
-            else:
-                print("No <loc> tag found in a sitemap!!!")
-                return False
+    def parse_sitemap_xml(self):
+        """Parse sitemap xml data as text"""
+        if "sitemap.xml" in self.url:
+            return requests.get(self.url).text
         else:
             print("Error reading a sitemap URL!!!")
             return False
 
-    def retrieve_domain(self, url):
-        """Retrieve a domain name from the URL"""
-        domain_name = urlparse(url).netloc
-        return domain_name
+    @staticmethod
+    def parse_sitemap(sitemap):
+        """Parse sitemap xml data to extract all page urls"""
+        soup = BeautifulSoup(sitemap, features="lxml")
+        if len(soup.find_all("loc")) > 0:
+            locs = soup.find_all("loc")
+            locs_url = sorted(list(set(
+                [loc.contents[0].strip("/") for loc in locs]
+            )))
+            return locs_url
+        else:
+            print("No <loc> tag found in a sitemap!!!")
+            return False
 
     # PARSE URL AND EXTRACT a tags
     def parse_page(self, url):
