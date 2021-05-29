@@ -152,7 +152,8 @@ class SitemapSpyder:
             "." in parsed.netloc
         )
 
-    def _page_is_in_sitemap(self, url, sitemap_locs):
+    @staticmethod
+    def _page_is_in_sitemap(url, sitemap_locs):
         """Check if url is included in sitemap"""
         return url in sitemap_locs
 
