@@ -38,7 +38,15 @@ class SitemapSpyder:
 
     # PARSE URL AND EXTRACT a tags
     def parse_page(self, url):
-        """Parse the page content"""
+        """Parse the page content
+
+        Args:
+            url (str): URL of a page extracted from sitemap
+
+        Returns:
+            An array containing a normalized page URL and soup.
+
+        """
         soup = BeautifulSoup(requests.get(url).content, "html.parser")
         return [self.normalize_url(url), soup]
 
