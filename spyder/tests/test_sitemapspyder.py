@@ -24,6 +24,57 @@ SITEMAP = """
   </urlset>
 """
 
+PAGE_1 = """
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>PAGE_1</title>
+      <meta name="description" content="Page 1 Description">
+    </head>
+    <body>
+      <div>
+        <a href="https://page_2">Internal Link to Page 2</a>
+        <a href="https://page_3">Internal Link to Page 3</a>
+      </div>
+    </body>
+  </html>
+"""
+
+PAGE_2 = """
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>PAGE_2</title>
+      <meta name="description" content="Page 2 Description">
+    </head>
+    <body>
+      <div>
+        <a href="https://page_1">Internal Link to Page 1</a>
+        <a href="https://page_3">Internal Link to Page 3</a>
+      </div>
+    </body>
+  </html>
+"""
+
+PAGE_3 = """
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>PAGE_3</title>
+      <meta name="description" content="Page 1 Description">
+    </head>
+    <body>
+      <div>
+        <a href="https://page_1">Internal Link to Page 1</a>
+        <a href="https://page_2">Internal Link to Page 2</a>
+      </div>
+    </body>
+  </html>
+"""
+
 
 class TestSitemapSpyder(TestCase):
 
@@ -48,3 +99,25 @@ class TestSitemapSpyder(TestCase):
         locs_url = self.crawler.parse_sitemap(sitemap=SITEMAP)
         last_letters = [url[-1] for url in locs_url]
         self.assertTrue("/" not in last_letters)
+
+    def test_extract_a_tags(self):
+        """Ensure anchor tags and hrefs are extracted from a page"""
+        soup = BeautifulSoup(PAGE_1, "html.parser")
+        a_tags = self.crawler.extract_a_tags(soup=soup)
+        self.assertEqual(len(a_tags), 2)
+        self.assertEqual(a_tags[0].get("href"), "https://page_2")
+        self.assertEqual(a_tags[1].get("href"), "https://page_3")
+
+    def test_retrieve_a_tags(self):
+        """Test retrieval of anchor tags and formation of origin page to destination pages list"""
+        locs_url = self.crawler.parse_sitemap(sitemap=SITEMAP)
+        pages = [
+            [locs_url[0], BeautifulSoup(PAGE_1, "html.parser")],
+            [locs_url[0], BeautifulSoup(PAGE_2, "html.parser")],
+            [locs_url[0], BeautifulSoup(PAGE_3, "html.parser")],
+        ]
+        list_page_od = self.crawler.retrieve_a_tags(parsed_pages=pages)
+        self.assertEqual(len(list_page_od), 3)
+        self.assertEqual(len(list_page_od[0][1]), 2)
+        self.assertEqual(len(list_page_od[1][1]), 2)
+        self.assertEqual(len(list_page_od[2][1]), 2)

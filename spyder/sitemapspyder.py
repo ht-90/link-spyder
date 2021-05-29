@@ -75,7 +75,8 @@ class SitemapSpyder:
                 parsed_pages.append(future.result())
         return parsed_pages
 
-    def extract_a_tags(self, soup):
+    @staticmethod
+    def extract_a_tags(soup):
         # !!! UPDATE THIS TO EXTRACT FROM BLOG CONTENT AND OTHER
         # FOCUS ANALYSIS ON INTERNAL LINKS WITHIN CONTENT
         a_tags = soup.findAll("a")
