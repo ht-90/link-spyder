@@ -112,9 +112,9 @@ class SitemapSpyder:
         ]
 
     # PARSE AND NORMALIZE href
-    def convert_to_absolute_url(self, url, href):
+    def convert_to_absolute_url(self, href):
         # join the URL if it's relative (not absolute link)
-        return urljoin(url, href)
+        return urljoin(self.url, href)
 
     def normalize_url(self, url):
         """Parse url components and normalize it

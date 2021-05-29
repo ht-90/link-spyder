@@ -47,7 +47,7 @@ def crawl_sitemap(request):
 
                 hrefs_page = [a.attrs.get("href") for a in a_tags]
                 hrefs_page = [
-                  sms.convert_to_absolute_url(url=url, href=href)
+                  sms.convert_to_absolute_url(href=href)
                   for href in hrefs_page
                 ]
                 hrefs_page = [

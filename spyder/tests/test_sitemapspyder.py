@@ -121,3 +121,10 @@ class TestSitemapSpyder(TestCase):
         self.assertEqual(len(list_page_od[0][1]), 2)
         self.assertEqual(len(list_page_od[1][1]), 2)
         self.assertEqual(len(list_page_od[2][1]), 2)
+
+    def test_convert_to_absolute_url(self):
+        """Test conversion of relative URL to absolute URL"""
+        href_rel_url = "/page_1"
+        abs_url = self.crawler.convert_to_absolute_url(href=href_rel_url)
+        self.assertEqual(abs_url, "https://test.com/page_1")
+
