@@ -116,7 +116,8 @@ class SitemapSpyder:
         # join the URL if it's relative (not absolute link)
         return urljoin(self.url, href)
 
-    def normalize_url(self, url):
+    @staticmethod
+    def normalize_url(url):
         """Parse url components and normalize it
         scheme: http, https
         netloc: domain

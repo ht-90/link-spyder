@@ -128,3 +128,18 @@ class TestSitemapSpyder(TestCase):
         abs_url = self.crawler.convert_to_absolute_url(href=href_rel_url)
         self.assertEqual(abs_url, "https://test.com/page_1")
 
+    def test_normalize_url(self):
+        """Test normalization of ugly URLs"""
+        # Prepare ugly URLs
+        url_slash = URL + "/"
+        url_double_slash = URL + "//" + "page_1"
+        url_param = URL + "/" + "page_1" + "/" + "?param=abc"
+
+        # Normalize ugly URLs
+        norm_url_slash = self.crawler.normalize_url(url=url_slash)
+        norm_url_double_slash = self.crawler.normalize_url(url=url_double_slash)
+        norm_url_param = self.crawler.normalize_url(url=url_param)
+
+        self.assertEqual(norm_url_slash, "https://test.com")
+        self.assertEqual(norm_url_double_slash, "https://test.com/page_1")
+        self.assertEqual(norm_url_param, "https://test.com/page_1")
