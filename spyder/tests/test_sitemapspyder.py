@@ -1,4 +1,5 @@
 from django.test import TestCase
+from bs4 import BeautifulSoup
 
 from ..sitemapspyder import SitemapSpyder
 
