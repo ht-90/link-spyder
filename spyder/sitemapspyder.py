@@ -138,11 +138,18 @@ class SitemapSpyder:
         return norm_url
 
     # VALIDATE href
-    def _page_is_valid(self, url):
+    @staticmethod
+    def _page_is_valid(url):
         """Validate a page URL"""
         parsed = urlparse(url)
-        return (bool(parsed.netloc) and bool(parsed.scheme)) and (
+        return (
+            bool(parsed.netloc) and bool(parsed.scheme) # domain and sheme not empty
+        ) and (
             (parsed.scheme == "http") or (parsed.scheme == "https")
+        ) and (
+            ("localhost:" not in parsed.netloc) and ("127.0.0.1:" not in parsed.netloc)
+        ) and (
+            "." in parsed.netloc
         )
 
     def _page_is_in_sitemap(self, url, sitemap_locs):

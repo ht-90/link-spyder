@@ -144,3 +144,21 @@ class TestSitemapSpyder(TestCase):
         self.assertEqual(norm_url_slash, "https://test.com")
         self.assertEqual(norm_url_double_slash, "https://test.com/page_1")
         self.assertEqual(norm_url_param, "https://test.com/page_1")
+
+    def test_page_url_validator(self):
+        """Ensure page URL validator catches invalid URL"""
+        # Prepare valid URLs
+        valid_url = "https://test.com/page_1/post_1"
+
+        # Prepare invalid URLs
+        invalid_url_netloc = "http://test/page_1"
+        invalid_url_scheme = "test.com"
+        invalid_url_localhost_1 = "http://localhost:8000"
+        invalid_url_localhost_2 = "http://127.0.0.1:8000"
+
+        # Run validator
+        self.assertTrue(self.crawler._page_is_valid(url=valid_url))
+        self.assertFalse(self.crawler._page_is_valid(url=invalid_url_netloc))
+        self.assertFalse(self.crawler._page_is_valid(url=invalid_url_scheme))
+        self.assertFalse(self.crawler._page_is_valid(url=invalid_url_localhost_1))
+        self.assertFalse(self.crawler._page_is_valid(url=invalid_url_localhost_2))
