@@ -9,6 +9,11 @@ class SitemapSpyder:
         self.url = url
         self.max_crawl = max_crawl
 
+    def retrieve_domain(self):
+        """Retrieve a domain name from the URL"""
+        domain_name = urlparse(self.url).netloc
+        return domain_name
+
     # PARSE SITEMAP AND DOMAIN NAME
     def parse_sitemap(self, url):
         if "sitemap.xml" in url:
