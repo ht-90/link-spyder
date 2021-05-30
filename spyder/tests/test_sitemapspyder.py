@@ -252,3 +252,48 @@ class TestSitemapSpyder(TestCase):
         self.assertFalse("category" in categories.keys())  # category is ignored as URL contains scheme
         self.assertFalse("archive" in categories.keys())  # archive is ignored as domain is missing in URL
         self.assertEqual(categories[""], 0)  # ensure trailing "/" is trimmed before using this function
+
+    def test_create_nodes(self):
+        """Test creation of node data"""
+        sitemap_urls = [
+            "test.com/category/page_1",
+            "test.com/category/page_2",
+            "test.com/archive/2020/page_3",
+            "test.com/page_4",
+            "test.com",
+        ]
+        categories = {
+            'archive': 0,
+            'category': 1,
+            'page_4': 2,
+            'other': 3,
+            '/': 4,
+        }
+        nodes = self.crawler.create_nodes(sitemap_locs=sitemap_urls, categories=categories)
+
+        self.assertEqual(len(nodes), 5)
+        self.assertEqual(nodes[0], {"id": sitemap_urls[0],
+                                    "category": 1,
+                                    "parent": "/category",
+                                    "page": "/page_1",
+                                    "size": 1})
+        self.assertEqual(nodes[1], {"id": sitemap_urls[1],
+                                    "category": 1,
+                                    "parent": "/category",
+                                    "page": "/page_2",
+                                    "size": 1})
+        self.assertEqual(nodes[2], {"id": sitemap_urls[2],
+                                    "category": 0,
+                                    "parent": "/archive",
+                                    "page": "/page_3",
+                                    "size": 1})
+        self.assertEqual(nodes[3], {"id": sitemap_urls[3],
+                                    "category": 2,
+                                    "parent": "/page_4",  # !!! update so parent to be "/"
+                                    "page": "/page_4",
+                                    "size": 1})
+        self.assertEqual(nodes[4], {"id": sitemap_urls[4],
+                                    "category": 4,
+                                    "parent": "/",
+                                    "page": "/",
+                                    "size": 1})

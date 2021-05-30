@@ -81,7 +81,7 @@ def crawl_sitemap(request):
             # Create viz dataset
             category_data = sms.create_node_categories(locs_url)
             nodes_int = sms.create_nodes(
-              sitemap_locs=locs_url, categories=category_data, url=url
+              sitemap_locs=locs_url, categories=category_data
             )
             edges_int = sms.create_edges(
               links=res_int, nodes=nodes_int, categories=category_data

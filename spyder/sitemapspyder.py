@@ -214,10 +214,9 @@ class SitemapSpyder:
 
         return cats
 
-    def create_nodes(self, sitemap_locs, categories, url):
-        """
-        url (str): user input url
-        """
+    @staticmethod
+    def create_nodes(sitemap_locs, categories):
+        """Create node data for graph visualization"""
         nodes = []
         for loc in sitemap_locs:
             if "/" not in loc:
