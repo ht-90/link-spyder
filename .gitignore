@@ -139,3 +139,7 @@ _test
 
 # log
 debug.log
+
+# django-staticfiles
+staticfiles
+
