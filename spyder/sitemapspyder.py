@@ -143,7 +143,7 @@ class SitemapSpyder:
         """Validate a page URL"""
         parsed = urlparse(url)
         return (
-            bool(parsed.netloc) and bool(parsed.scheme) # domain and sheme not empty
+            bool(parsed.netloc) and bool(parsed.scheme)  # domain and sheme not empty
         ) and (
             (parsed.scheme == "http") or (parsed.scheme == "https")
         ) and (
