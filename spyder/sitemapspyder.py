@@ -158,7 +158,9 @@ class SitemapSpyder:
         return url in sitemap_locs
 
     # EXTRACT INTERNAL AND EXTERNAL LINKS (href)
-    def extract_internal_links(self, hrefs, domain_name, url):
+    @staticmethod
+    def extract_internal_links(hrefs, domain_name, url):
+        """Extract only URLs containing the same domain name from a list of URLs"""
         return sorted(
             list(set(
                 [
@@ -168,7 +170,8 @@ class SitemapSpyder:
             ))
         )
 
-    def extract_external_links(self, hrefs, domain_name, url):
+    @staticmethod
+    def extract_external_links(hrefs, domain_name, url):
         return sorted(
             list(set(
                 [

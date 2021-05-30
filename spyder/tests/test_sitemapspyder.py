@@ -162,3 +162,42 @@ class TestSitemapSpyder(TestCase):
         self.assertFalse(self.crawler._page_is_valid(url=invalid_url_scheme))
         self.assertFalse(self.crawler._page_is_valid(url=invalid_url_localhost_1))
         self.assertFalse(self.crawler._page_is_valid(url=invalid_url_localhost_2))
+
+    def test_extract_internal_links(self):
+        """Ensure only extracting internal link URL and ignore same URL as url arg"""
+        # Prepare test data
+        domain = "test.com"
+        hrefs = [
+            "https://test.com",
+            "https://test.com/page_1",
+            "https://subdomain.test.com/page_1",
+            "https://test.net/page_1",
+        ]
+        url = "https://test.com"
+
+        # Filter internal links
+        internal_links = self.crawler.extract_internal_links(hrefs=hrefs, domain_name=domain, url=url)
+
+        # Test extraction of URL with same domain and excluding URL same as url arg
+        self.assertEqual(len(internal_links), 2)
+        self.assertEqual(internal_links[0], "https://subdomain.test.com/page_1")
+        self.assertEqual(internal_links[1], "https://test.com/page_1")
+
+    def test_extract_external_links(self):
+        """Ensure only extracting external link URL"""
+        # Prepare test data
+        domain = "test.com"
+        hrefs = [
+            "https://test.com",
+            "https://test.com/page_1",
+            "https://subdomain.test.com/page_1",
+            "https://test.net/page_1",
+        ]
+        url = "https://test.com"
+
+        # Filter internal links
+        external_links = self.crawler.extract_external_links(hrefs=hrefs, domain_name=domain, url=url)
+
+        # Test extraction of URL with different domain from url arg
+        self.assertEqual(len(external_links), 1)
+        self.assertEqual(external_links[0], "https://test.net/page_1")
