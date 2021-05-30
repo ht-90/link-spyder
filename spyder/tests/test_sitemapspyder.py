@@ -420,3 +420,31 @@ class TestSitemapSpyder(TestCase):
         self.assertEqual(updated_nodes[1]["size"], 1)
         self.assertEqual(updated_nodes[2]["size"], 2)
         self.assertEqual(updated_nodes[3]["size"], 0)  # !!! node size is 0 if URL page not having any internal link
+
+    def test_generate_graph_data(self):
+        """Test creation of graph visualization data"""
+        nodes = [
+            {"id": "test.com/category/page_1", "category": 1, "parent": "/category", "page": "/page_1", "size": 1},
+            {"id": "test.com/category/page_2", "category": 1, "parent": "/category", "page": "/page_2", "size": 1},
+        ]
+        edges = [
+            {
+                'source': 'test.com/category/page_1',
+                'source_category': 1,
+                'target': 'test.com/category/page_2',
+                'target_category': 1,
+                'value': 1,
+            },
+            {
+                'source': 'test.com/category/page_2',
+                'source_category': 1,
+                'target': 'test.com/category/page_1',
+                'target_category': 1,
+                'value': 1,
+            },
+        ]
+        graph_data = self.crawler.generate_graph_data(nodes=nodes, edges=edges)
+
+        self.assertEqual(list(graph_data.keys()), ["nodes", "links"])
+        self.assertEqual(len(graph_data["nodes"]), 2)
+        self.assertEqual(len(graph_data["links"]), 2)

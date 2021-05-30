@@ -321,7 +321,8 @@ class SitemapSpyder:
         return nodes
 
     # CREATE GRAPH DATA
-    def generate_graph_data(self, nodes, edges):
+    @staticmethod
+    def generate_graph_data(nodes, edges):
         graph_data = {}
         graph_data.update({"nodes": nodes})
         graph_data.update({"links": edges})
