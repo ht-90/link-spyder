@@ -234,3 +234,21 @@ class TestSitemapSpyder(TestCase):
         self.assertEqual(categories["page_4"], 2)  # anything after domain is considered category...
         self.assertEqual(categories["other"], 3)
         self.assertEqual(categories["/"], 4)
+
+    def test_create_node_categories_ugly_url(self):
+        """Test extraction of parent layer of website structure for ugly URLs"""
+        sitemap_urls = [
+            "test.com/",  # slash at the end
+            "http://test.com/category/page_1",  # URL with scheme
+            "archive/page_2",  # missing domain
+        ]
+        categories = self.crawler.create_node_categories(locs_url=sitemap_urls)
+
+        # Ensure total number of categories extracted
+        self.assertEqual(len(categories), 4)
+
+        # Ensure "other" category is added
+        self.assertTrue("other" in categories.keys())
+        self.assertFalse("category" in categories.keys())  # category is ignored as URL contains scheme
+        self.assertFalse("archive" in categories.keys())  # archive is ignored as domain is missing in URL
+        self.assertEqual(categories[""], 0)  # ensure trailing "/" is trimmed before using this function
