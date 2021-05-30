@@ -311,7 +311,8 @@ class SitemapSpyder:
             for cat, cat_num in categories.items()
         ]
 
-    def size_nodes(self, links, nodes):
+    @staticmethod
+    def size_nodes(links, nodes):
         """Add number of target links per node as size"""
         link_src = [src["source"] for src in links]
         for i_node, node in enumerate(nodes):

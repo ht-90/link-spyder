@@ -374,3 +374,49 @@ class TestSitemapSpyder(TestCase):
         self.assertEqual(list(groups[0].keys()), ["category", "category_url"])
         self.assertTrue(type(groups[0]["category"]), int)
         self.assertTrue(type(groups[0]["category_url"]), str)
+
+    def test_size_nodes(self):
+        """Test updating size value of nodes"""
+        links = [
+            {
+                'source': 'test.com/category/page_1',
+                'source_category': 1,
+                'target': 'test.com/category/page_2',
+                'target_category': 1,
+                'value': 1,
+            },
+            {
+                'source': 'test.com/category/page_2',
+                'source_category': 1,
+                'target': 'test.com/category/page_1',
+                'target_category': 1,
+                'value': 1,
+            },
+            {
+                'source': 'test.com/archive/page_3',
+                'source_category': 0,
+                'target': 'test.com/category/page_1',
+                'target_category': 1,
+                'value': 1,
+            },
+            {
+                'source': 'test.com/archive/page_3',
+                'source_category': 0,
+                'target': 'test.com/category/page_2',
+                'target_category': 1,
+                'value': 1,
+            },
+        ]
+        nodes = [
+            {"id": "test.com/category/page_1", "category": 1, "parent": "/category", "page": "/page_1", "size": 1},
+            {"id": "test.com/category/page_2", "category": 1, "parent": "/category", "page": "/page_2", "size": 1},
+            {"id": "test.com/archive/page_3", "category": 0, "parent": "/archive", "page": "/page_3", "size": 1},
+            {"id": "test.com/tag", "category": 2, "parent": "/tag", "page": "/tag", "size": 1},
+        ]
+        updated_nodes = self.crawler.size_nodes(links=links, nodes=nodes)
+
+        self.assertEqual(len(updated_nodes), 4)
+        self.assertEqual(updated_nodes[0]["size"], 1)
+        self.assertEqual(updated_nodes[1]["size"], 1)
+        self.assertEqual(updated_nodes[2]["size"], 2)
+        self.assertEqual(updated_nodes[3]["size"], 0)  # !!! node size is 0 if URL page not having any internal link
