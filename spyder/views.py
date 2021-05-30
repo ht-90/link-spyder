@@ -86,9 +86,7 @@ def crawl_sitemap(request):
             edges_int = sms.create_edges(
               links=res_int, nodes=nodes_int, categories=category_data
             )
-            category_data = sms.create_group_data(
-              domain_name=domain_name, categories=category_data
-            )
+            category_data = sms.create_group_data(categories=category_data)
             nodes_int = sms.size_nodes(links=edges_int, nodes=nodes_int)
             graph_data = sms.generate_graph_data(
               nodes=nodes_int, edges=edges_int
