@@ -304,7 +304,8 @@ class SitemapSpyder:
 
         return edges_int
 
-    def create_group_data(self, domain_name, categories):
+    @staticmethod
+    def create_group_data(categories):
         return [
             {"category": cat_num, "category_url": cat}
             for cat, cat_num in categories.items()

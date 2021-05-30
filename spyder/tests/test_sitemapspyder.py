@@ -358,3 +358,19 @@ class TestSitemapSpyder(TestCase):
                                     'target': 'test.com/category/page_2',
                                     'target_category': 1,
                                     'value': 1})
+
+    def test_create_group_data(self):
+        """Test creation of group data for graph visualization"""
+        categories = {
+            'archive': 0,
+            'category': 1,
+            'tag': 2,
+            'other': 3,
+            '/': 4,
+        }
+        groups = self.crawler.create_group_data(categories=categories)
+
+        self.assertEqual(len(groups), 5)
+        self.assertEqual(list(groups[0].keys()), ["category", "category_url"])
+        self.assertTrue(type(groups[0]["category"]), int)
+        self.assertTrue(type(groups[0]["category_url"]), str)
