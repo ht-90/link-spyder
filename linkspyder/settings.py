@@ -133,3 +133,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Crawler settings
+
+MAX_CRAWL = 5
+MAX_THREADS = 30
