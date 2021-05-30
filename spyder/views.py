@@ -30,8 +30,6 @@ def crawl_sitemap(request):
 
         if url_is_valid():
 
-            MAX_CRAWL = 5
-
             sms = SitemapSpyder(url=url, max_crawl=MAX_CRAWL)
             # Get domain and sitemap of url
             domain_name = sms.retrieve_domain()
