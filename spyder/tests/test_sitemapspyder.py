@@ -210,3 +210,28 @@ class TestSitemapSpyder(TestCase):
         self.assertTrue(self.crawler.trim_url_scheme(url=url_with_http), "test.com/page")
         self.assertTrue(self.crawler.trim_url_scheme(url=url_with_https), "test.com/page")
         self.assertTrue(self.crawler.trim_url_scheme(url=url_without_scheme), "test.com/page")
+
+    def test_create_node_categories(self):
+        """Test extraction of parent layer of website structure"""
+        sitemap_urls = [
+            "test.com/category/page_1",
+            "test.com/category/page_2",
+            "test.com/archive/2020/page_3",
+            "test.com/page_4",
+            "test.com/",
+        ]
+        categories = self.crawler.create_node_categories(locs_url=sitemap_urls)
+
+        # Ensure total number of categories extracted
+        self.assertEqual(len(categories), 6)
+
+        # Ensure "other" category is added
+        self.assertTrue("other" in categories.keys())
+
+        # Ensure categories are stored with ascending order
+        self.assertEqual(categories[""], 0)  # created if domain top-level page is in sitemap_urls
+        self.assertEqual(categories["archive"], 1)
+        self.assertEqual(categories["category"], 2)
+        self.assertEqual(categories["page_4"], 3)  # anything after domain is considered category...
+        self.assertEqual(categories["other"], 4)
+        self.assertEqual(categories["/"], 5)

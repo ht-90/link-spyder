@@ -188,14 +188,30 @@ class SitemapSpyder:
         return urlparse(url).netloc + urlparse(url).path
 
     # CREATE NODES AND EDGES
-    def create_node_categories(self, locs_url):
+    @staticmethod
+    def create_node_categories(locs_url):
+        """Extract parent layer names of website structure
+
+        Args:
+            locs_url (list): a list of URLs without scheme (http:// or https://)
+
+        Returns:
+            A dict with layer names as keys and id number for them as values. Keys and values are stored in ascending
+            order.
+
+        Example:
+            {'': 0, 'archive': 1, 'category': 2, 'contact': 3, 'other': 4, '/': 6}
+        """
+        # !!! Extract parent layer names assuming that parent layer is directly after domain
         cats = [loc.split("/")[1] for loc in locs_url if "/" in loc]
         cats = sorted(list(set(cats)))
         cats = {
             cat: cat_num for cat, cat_num in zip(cats, range(0, len(cats)))
         }
+        # Append "other" layer and top-level layer with id values
         cats.update({"other": len(cats)})
-        cats.update({"/": len(cats) + 1})
+        cats.update({"/": len(cats)})
+
         return cats
 
     def create_nodes(self, sitemap_locs, categories, url):
