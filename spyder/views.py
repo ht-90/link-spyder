@@ -38,7 +38,7 @@ def crawl_sitemap(request):
             sitemap_xml = sms.parse_sitemap_xml()
             locs_url = sms.parse_sitemap(sitemap=sitemap_xml)
             # Parse urls in sitemap
-            parsed_pages = sms.parse_page_threading(urls=locs_url)
+            parsed_pages = sms.parse_page_threading(urls=locs_url, max_threads=MAX_THREADS)
             # Retrieve a tags from each page
             url_a_tags = sms.retrieve_a_tags(parsed_pages=parsed_pages)
 
