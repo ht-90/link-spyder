@@ -1,1 +1,1 @@
-web: gunicorn --chdir linkspyder app:app
+web: gunicorn linkspyder.wsgi
