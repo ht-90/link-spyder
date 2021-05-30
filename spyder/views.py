@@ -29,8 +29,9 @@ def crawl_sitemap(request):
 
             sms = SitemapSpyder(url=url, max_crawl=MAX_CRAWL)
             # Get domain and sitemap of url
-            domain_name = sms.retrieve_domain(url=url)
-            locs_url = sms.parse_sitemap(url=url)
+            domain_name = sms.retrieve_domain()
+            sitemap_xml = sms.parse_sitemap_xml()
+            locs_url = sms.parse_sitemap(sitemap=sitemap_xml)
             # Parse urls in sitemap
             parsed_pages = sms.parse_page_threading(urls=locs_url)
             # Retrieve a tags from each page
@@ -46,7 +47,7 @@ def crawl_sitemap(request):
 
                 hrefs_page = [a.attrs.get("href") for a in a_tags]
                 hrefs_page = [
-                  sms.convert_to_absolute_url(url=url, href=href)
+                  sms.convert_to_absolute_url(href=href)
                   for href in hrefs_page
                 ]
                 hrefs_page = [
@@ -80,14 +81,12 @@ def crawl_sitemap(request):
             # Create viz dataset
             category_data = sms.create_node_categories(locs_url)
             nodes_int = sms.create_nodes(
-              sitemap_locs=locs_url, categories=category_data, url=url
+              sitemap_locs=locs_url, categories=category_data
             )
             edges_int = sms.create_edges(
               links=res_int, nodes=nodes_int, categories=category_data
             )
-            category_data = sms.create_group_data(
-              domain_name=domain_name, categories=category_data
-            )
+            category_data = sms.create_group_data(categories=category_data)
             nodes_int = sms.size_nodes(links=edges_int, nodes=nodes_int)
             graph_data = sms.generate_graph_data(
               nodes=nodes_int, edges=edges_int

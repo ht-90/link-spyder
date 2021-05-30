@@ -9,32 +9,44 @@ class SitemapSpyder:
         self.url = url
         self.max_crawl = max_crawl
 
-    # PARSE SITEMAP AND DOMAIN NAME
-    def parse_sitemap(self, url):
-        if "sitemap.xml" in url:
-            xml_sitemap = requests.get(url).text
-            soup = BeautifulSoup(xml_sitemap, features="lxml")
-            if len(soup.find_all("loc")) > 0:
-                locs = soup.find_all("loc")
-                locs_url = sorted(list(set(
-                    [loc.contents[0].strip("/") for loc in locs]
-                )))
-                return locs_url
-            else:
-                print("No <loc> tag found in a sitemap!!!")
-                return False
+    def retrieve_domain(self):
+        """Retrieve a domain name from the URL"""
+        domain_name = urlparse(self.url).netloc
+        return domain_name
+
+    def parse_sitemap_xml(self):
+        """Parse sitemap xml data as text"""
+        if "sitemap.xml" in self.url:
+            return requests.get(self.url).text
         else:
             print("Error reading a sitemap URL!!!")
             return False
 
-    def retrieve_domain(self, url):
-        """Retrieve a domain name from the URL"""
-        domain_name = urlparse(url).netloc
-        return domain_name
+    @staticmethod
+    def parse_sitemap(sitemap):
+        """Parse sitemap xml data to extract all page urls"""
+        soup = BeautifulSoup(sitemap, features="lxml")
+        if len(soup.find_all("loc")) > 0:
+            locs = soup.find_all("loc")
+            locs_url = sorted(list(set(
+                [loc.contents[0].strip("/") for loc in locs]
+            )))
+            return locs_url
+        else:
+            print("No <loc> tag found in a sitemap!!!")
+            return False
 
     # PARSE URL AND EXTRACT a tags
     def parse_page(self, url):
-        """Parse the page content"""
+        """Parse the page content
+
+        Args:
+            url (str): URL of a page extracted from sitemap
+
+        Returns:
+            An array containing a normalized page URL and soup.
+
+        """
         soup = BeautifulSoup(requests.get(url).content, "html.parser")
         return [self.normalize_url(url), soup]
 
@@ -63,7 +75,8 @@ class SitemapSpyder:
                 parsed_pages.append(future.result())
         return parsed_pages
 
-    def extract_a_tags(self, soup):
+    @staticmethod
+    def extract_a_tags(soup):
         # !!! UPDATE THIS TO EXTRACT FROM BLOG CONTENT AND OTHER
         # FOCUS ANALYSIS ON INTERNAL LINKS WITHIN CONTENT
         a_tags = soup.findAll("a")
@@ -99,11 +112,12 @@ class SitemapSpyder:
         ]
 
     # PARSE AND NORMALIZE href
-    def convert_to_absolute_url(self, url, href):
+    def convert_to_absolute_url(self, href):
         # join the URL if it's relative (not absolute link)
-        return urljoin(url, href)
+        return urljoin(self.url, href)
 
-    def normalize_url(self, url):
+    @staticmethod
+    def normalize_url(url):
         """Parse url components and normalize it
         scheme: http, https
         netloc: domain
@@ -124,19 +138,29 @@ class SitemapSpyder:
         return norm_url
 
     # VALIDATE href
-    def _page_is_valid(self, url):
+    @staticmethod
+    def _page_is_valid(url):
         """Validate a page URL"""
         parsed = urlparse(url)
-        return (bool(parsed.netloc) and bool(parsed.scheme)) and (
+        return (
+            bool(parsed.netloc) and bool(parsed.scheme)  # domain and sheme not empty
+        ) and (
             (parsed.scheme == "http") or (parsed.scheme == "https")
+        ) and (
+            ("localhost:" not in parsed.netloc) and ("127.0.0.1:" not in parsed.netloc)
+        ) and (
+            "." in parsed.netloc
         )
 
-    def _page_is_in_sitemap(self, url, sitemap_locs):
+    @staticmethod
+    def _page_is_in_sitemap(url, sitemap_locs):
         """Check if url is included in sitemap"""
         return url in sitemap_locs
 
     # EXTRACT INTERNAL AND EXTERNAL LINKS (href)
-    def extract_internal_links(self, hrefs, domain_name, url):
+    @staticmethod
+    def extract_internal_links(hrefs, domain_name, url):
+        """Extract only URLs containing the same domain name from a list of URLs"""
         return sorted(
             list(set(
                 [
@@ -146,7 +170,8 @@ class SitemapSpyder:
             ))
         )
 
-    def extract_external_links(self, hrefs, domain_name, url):
+    @staticmethod
+    def extract_external_links(hrefs, domain_name, url):
         return sorted(
             list(set(
                 [
@@ -157,24 +182,41 @@ class SitemapSpyder:
             ))
         )
 
-    def trim_url_scheme(self, url):
+    @staticmethod
+    def trim_url_scheme(url):
+        """Trim http:// and https:// from URL"""
         return urlparse(url).netloc + urlparse(url).path
 
     # CREATE NODES AND EDGES
-    def create_node_categories(self, locs_url):
+    @staticmethod
+    def create_node_categories(locs_url):
+        """Extract parent layer names of website structure
+
+        Args:
+            locs_url (list): a list of URLs without scheme (http:// or https://)
+
+        Returns:
+            A dict with layer names as keys and id number for them as values. Keys and values are stored in ascending
+            order.
+
+        Example:
+            {'': 0, 'archive': 1, 'category': 2, 'contact': 3, 'other': 4, '/': 6}
+        """
+        # !!! Extract parent layer names assuming that parent layer is directly after domain
         cats = [loc.split("/")[1] for loc in locs_url if "/" in loc]
         cats = sorted(list(set(cats)))
         cats = {
             cat: cat_num for cat, cat_num in zip(cats, range(0, len(cats)))
         }
+        # Append "other" layer and top-level layer with id values
         cats.update({"other": len(cats)})
-        cats.update({"/": len(cats) + 1})
+        cats.update({"/": len(cats)})
+
         return cats
 
-    def create_nodes(self, sitemap_locs, categories, url):
-        """
-        url (str): user input url
-        """
+    @staticmethod
+    def create_nodes(sitemap_locs, categories):
+        """Create node data for graph visualization"""
         nodes = []
         for loc in sitemap_locs:
             if "/" not in loc:
@@ -199,15 +241,29 @@ class SitemapSpyder:
             )
         return nodes
 
-    def create_edges(self, links, nodes, categories):
-        """Create edges list and add source and target categories"""
+    @staticmethod
+    def create_edges(links, nodes, categories):
+        """Create edges list and add source and target categories
+
+        Example:
+            [
+                {
+                    'source': 'domain.com/category_1/page_1',
+                    'source_category': 1,
+                    'target': 'domain.com/category_2/page_2',
+                    'target_category': 2,
+                    'value': 1
+                },
+                ...
+            ]
+        """
         edges_int = []
         nodes = [n["id"] for n in nodes]
 
         for link in links:
             src = urlparse(link["source"]).netloc\
                 + urlparse(link["source"]).path
-            print(src)
+
             if "/" in src:
                 src_cat = categories[src.split("/")[1]]
             else:
@@ -248,13 +304,15 @@ class SitemapSpyder:
 
         return edges_int
 
-    def create_group_data(self, domain_name, categories):
+    @staticmethod
+    def create_group_data(categories):
         return [
             {"category": cat_num, "category_url": cat}
             for cat, cat_num in categories.items()
         ]
 
-    def size_nodes(self, links, nodes):
+    @staticmethod
+    def size_nodes(links, nodes):
         """Add number of target links per node as size"""
         link_src = [src["source"] for src in links]
         for i_node, node in enumerate(nodes):
@@ -263,7 +321,8 @@ class SitemapSpyder:
         return nodes
 
     # CREATE GRAPH DATA
-    def generate_graph_data(self, nodes, edges):
+    @staticmethod
+    def generate_graph_data(nodes, edges):
         graph_data = {}
         graph_data.update({"nodes": nodes})
         graph_data.update({"links": edges})
