@@ -50,7 +50,7 @@ class SitemapSpyder:
         soup = BeautifulSoup(requests.get(url).content, "html.parser")
         return [self.normalize_url(url), soup]
 
-    def parse_page_threading(self, urls):
+    def parse_page_threading(self, urls, max_threads):
         """
         Return:
             Returns a list of lists containing parsed url and html pages in a
@@ -64,8 +64,7 @@ class SitemapSpyder:
             ]
         """
         urls = urls[:self.max_crawl]
-        MAX_THREADS = 30
-        threads = min(MAX_THREADS, len(urls))
+        threads = min(max_threads, len(urls))
         parsed_pages = []
         with ThreadPoolExecutor(max_workers=threads) as executor:
             futures = []

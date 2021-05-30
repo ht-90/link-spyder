@@ -2,10 +2,15 @@ from django.views.generic import TemplateView
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from .sitemapspyder import SitemapSpyder
 from .analyzer import Analyzer
 from .validators import SitemapURLValidator
+
+
+MAX_CRAWL = settings.MAX_CRAWL
+MAX_THREADS = settings.MAX_THREADS
 
 
 class IndexView(TemplateView):
