@@ -54,6 +54,8 @@ jobs:
     # Set environmental variables from Github secrets
     env:
       PROJECT_ENV: ${{ secrets.PROJECT_ENV }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
     steps:
       # Checkout repository
       - uses: actions/checkout@v1
