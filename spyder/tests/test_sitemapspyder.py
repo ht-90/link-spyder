@@ -201,3 +201,12 @@ class TestSitemapSpyder(TestCase):
         # Test extraction of URL with different domain from url arg
         self.assertEqual(len(external_links), 1)
         self.assertEqual(external_links[0], "https://test.net/page_1")
+
+    def test_trim_url_scheme(self):
+        """Test trimming http and https from URL"""
+        url_with_http = "http://test.com/page"
+        url_with_https = "https://test.com/page"
+        url_without_scheme = "test.com/page"
+        self.assertTrue(self.crawler.trim_url_scheme(url=url_with_http), "test.com/page")
+        self.assertTrue(self.crawler.trim_url_scheme(url=url_with_https), "test.com/page")
+        self.assertTrue(self.crawler.trim_url_scheme(url=url_without_scheme), "test.com/page")

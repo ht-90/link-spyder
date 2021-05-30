@@ -182,7 +182,9 @@ class SitemapSpyder:
             ))
         )
 
-    def trim_url_scheme(self, url):
+    @staticmethod
+    def trim_url_scheme(url):
+        """Trim http:// and https:// from URL"""
         return urlparse(url).netloc + urlparse(url).path
 
     # CREATE NODES AND EDGES
