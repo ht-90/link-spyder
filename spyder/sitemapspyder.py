@@ -241,15 +241,29 @@ class SitemapSpyder:
             )
         return nodes
 
-    def create_edges(self, links, nodes, categories):
-        """Create edges list and add source and target categories"""
+    @staticmethod
+    def create_edges(links, nodes, categories):
+        """Create edges list and add source and target categories
+
+        Example:
+            [
+                {
+                    'source': 'domain.com/category_1/page_1',
+                    'source_category': 1,
+                    'target': 'domain.com/category_2/page_2',
+                    'target_category': 2,
+                    'value': 1
+                },
+                ...
+            ]
+        """
         edges_int = []
         nodes = [n["id"] for n in nodes]
 
         for link in links:
             src = urlparse(link["source"]).netloc\
                 + urlparse(link["source"]).path
-            print(src)
+
             if "/" in src:
                 src_cat = categories[src.split("/")[1]]
             else:

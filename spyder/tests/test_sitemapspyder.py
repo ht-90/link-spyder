@@ -297,3 +297,64 @@ class TestSitemapSpyder(TestCase):
                                     "parent": "/",
                                     "page": "/",
                                     "size": 1})
+
+    def test_create_edges(self):
+        """Test creation of edge data"""
+        links = [
+            {
+                "source": "https://test.com/category/page_1",
+                "value": 1,
+                "target": ["test.com/category/page_2"]
+            },
+            {
+                "source": "https://test.com/category/page_2",
+                "value": 1,
+                "target": ["test.com/category/page_1"]
+            },
+            {
+                "source": "https://test.com/archive/page_3",
+                "value": 1,
+                "target": ["test.com/category/page_1", "test.com/category/page_2"]
+            },
+            {
+                "source": "https://test.com/tag",
+                "value": 1,
+                "target": []
+            },
+        ]
+        nodes = [
+            {"id": "test.com/category/page_1", "category": 1, "parent": "/category", "page": "/page_1", "size": 1},
+            {"id": "test.com/category/page_2", "category": 1, "parent": "/category", "page": "/page_2", "size": 1},
+            {"id": "test.com/archive/page_3", "category": 0, "parent": "/archive", "page": "/page_3", "size": 1},
+            {"id": "test.com/tag", "category": 2, "parent": "/tag", "page": "/tag", "size": 1},
+        ]
+        categories = {
+            'archive': 0,
+            'category': 1,
+            'tag': 2,
+            'other': 3,
+            '/': 4,
+        }
+        edges = self.crawler.create_edges(links=links, nodes=nodes, categories=categories)
+
+        self.assertEqual(len(edges), 4)
+        self.assertEqual(edges[0], {'source': 'test.com/category/page_1',
+                                    'source_category': 1,
+                                    'target': 'test.com/category/page_2',
+                                    'target_category': 1,
+                                    'value': 1})
+        self.assertEqual(edges[1], {'source': 'test.com/category/page_2',
+                                    'source_category': 1,
+                                    'target': 'test.com/category/page_1',
+                                    'target_category': 1,
+                                    'value': 1})
+        self.assertEqual(edges[2], {'source': 'test.com/archive/page_3',
+                                    'source_category': 0,
+                                    'target': 'test.com/category/page_1',
+                                    'target_category': 1,
+                                    'value': 1})
+        self.assertEqual(edges[3], {'source': 'test.com/archive/page_3',
+                                    'source_category': 0,
+                                    'target': 'test.com/category/page_2',
+                                    'target_category': 1,
+                                    'value': 1})
