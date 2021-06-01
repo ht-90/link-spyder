@@ -4,13 +4,11 @@ validation.py
 @author: ht-90
 """
 
-
 import re
 
 
-# Django URL validator
-class URLValidator:
-    url = str()
+class SitemapURLValidator:
+    address = str()
     regex = re.compile(
         r"^(?:http|ftp)s?://"  # http:// or https://
         r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
@@ -21,9 +19,9 @@ class URLValidator:
         re.IGNORECASE,
     )
 
-    def __init__(self, url, verify_exists=False):
-        self.url = url
+    def __init__(self, address, verify_exists=False):
+        self.address = address
         self.verify_exists = verify_exists
 
     def __call__(self):
-        return re.match(self.regex, self.url) is not None
+        return re.match(self.regex, self.address) is not None

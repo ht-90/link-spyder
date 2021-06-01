@@ -5,15 +5,24 @@ beautifulsoup4
 lxml
 
 # Web application
-flask
+Django
+whitenoise
 gunicorn
 
 # analysis
 numpy
 
+# tests
+coverage
+
 # linter
 flake8
-pylint
 
 # formatter
 black
+
+# environment
+python-dotenv
+
+# ci/cd
+tox
