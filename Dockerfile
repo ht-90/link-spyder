@@ -1,5 +1,5 @@
 # Base image
-FROM python:3.7-slim
+FROM python:3.9-slim
 
 # Username
 USER root
@@ -14,8 +14,8 @@ RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools
 
 # Copy requirements file and move to workspace
-WORKDIR /home/link-spyder
-COPY requirements.txt ${PWD}
+WORKDIR /code/
+COPY requirements.txt /code/
 
 # Install python packages
 RUN pip install -r requirements.txt
